@@ -6,9 +6,10 @@
   <body>
     <p>{{.answer}}</p>
     <p>{{.question}}</p>
-    <form action="/chat/review/process/{{.step}}" method="get">
+    <form action="/chat/review" method="post">
       <input type="text" name="answer" required />
       <input type="submit" value="Submit" />
+      <input type="hidden" name="step" value="{{.step}}" />
     </form>
   </body>
 </html>

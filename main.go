@@ -39,46 +39,49 @@ var stopWords = map[string]struct{}{
 
 //go:embed flow/review.json
 var reviewFlowJson []byte
-
 var reviewFlow ReviewFlow
+
+const finalStep = 199
 
 func main() {
 
-	startReviewFlow()
+	LoadReviewFlow()
 
 	e := gin.Default()
 
 	api := e.Group("/api")
 	api.GET("customer/:customer/order/:order/delivery-confirmed", func(c *gin.Context) {
-		c.Redirect(302, "/chat/review/1")
+		c.Redirect(http.StatusPermanentRedirect, "/chat/review/1")
 	})
 
 	e.LoadHTMLFiles("form.html")
-	chat := e.Group("/chat")
-	chat.GET("/review/:step", func(c *gin.Context) {
 
-		step, _ := strconv.Atoi(c.Param("step"))
-		userAnswer := c.Query("answer")
+	chat := e.Group("/chat")
+	chat.GET("/review", func(c *gin.Context) {
+		step := 1
 		c.HTML(http.StatusOK, "form.html", gin.H{
 			"title":    "Review",
-			"answer":   userAnswer,
 			"question": Ask(step),
 			"step":     strconv.Itoa(step),
 		})
 	})
 
-	chat.GET("/review/process/:step", func(c *gin.Context) {
-		step, _ := strconv.Atoi(c.Param("step"))
-		userAnswer := c.Query("answer")
+	chat.POST("/review", func(c *gin.Context) {
+		step, _ := strconv.Atoi(c.Request.FormValue("step"))
+		userAnswer := c.Request.FormValue("answer")
 		nextStep, answer := Answer(step, userAnswer)
-		c.Redirect(302, "/chat/review/"+strconv.Itoa(nextStep)+"?answer="+answer)
+		c.HTML(http.StatusOK, "form.html", gin.H{
+			"title":    "Review",
+			"answer":   answer,
+			"question": Ask(nextStep),
+			"step":     strconv.Itoa(nextStep),
+		})
 	})
 
 	e.Run()
-
 }
 
-func startReviewFlow() {
+func LoadReviewFlow() {
 	err := json.Unmarshal(reviewFlowJson, &reviewFlow)
 	if err != nil {
 		panic(err)
@@ -94,7 +97,7 @@ func Answer(step int, userAnswer string) (int, string) {
 	intent := identifyIntent(userAnswer, reviewFlowStep.IntentsDataset)
 	intentAnswer, ok := reviewFlowStep.IntentConfig[intent]
 	if !ok {
-		return 199, ""
+		return finalStep, ""
 	}
 	nextStep, _ := strconv.Atoi(intentAnswer.NextStep)
 	return nextStep, intentAnswer.Answer
