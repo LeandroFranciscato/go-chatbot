@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{.title}}</title>
+  </head>
+  <body>
+    <p>{{.answer}}</p>
+    <p>{{.question}}</p>
+    <form action="/chat/review/process/{{.step}}" method="get">
+      <input type="text" name="answer" required />
+      <input type="submit" value="Submit" />
+    </form>
+  </body>
+</html>

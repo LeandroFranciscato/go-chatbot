@@ -1,0 +1,161 @@
+{
+    "id": 1,
+    "name": "review collection flow",
+    "greeting": "",
+    "steps": {
+        "1": {
+            "question": "We noticed you've recently received your Order. We'd love to hear about your experience. Can you spare a few minutes to share your thoughts?",
+            "intents_dataset": {
+                "Sure, I can do that": "start_review",
+                "Yes, I'd like to give a review": "start_review",
+                "Okay, let's do this": "start_review",
+                "I'd be happy to share my thoughts": "start_review",
+                "No, I'm not interested": "stop_review",
+                "No, I don't want to do that": "stop_review",
+                "No, I'm not in the mood": "stop_review",
+                "No, I'm busy right now": "stop_review"
+            },
+            "intent_config": {
+                "start_review": {
+                    "answer": "Awesome!",
+                    "next_step": "2"
+                },
+                "stop_review": {
+                    "answer": "No Worries!",
+                    "next_step": "199"
+                },
+                "unknown": {
+                    "answer": "Sorry, couldn't understand your answer?",
+                    "next_step": "1"
+                }
+            }
+        },
+        "2": {
+            "question": "On a scale of 1-5, how would you rate the Product?",
+            "intents_dataset": {
+                "1": "bad_rate",
+                "2": "bad_rate",
+                "3": "bad_rate",
+                "4": "good_rate",
+                "5": "good_rate",
+                "one": "bad_rate",
+                "two": "bad_rate",
+                "three": "bad_rate",
+                "four": "good_rate",
+                "five": "good_rate",
+                "6 7 8 9 10 11 12 13 14 15 16 17 18 19 20": "awesome_rate"
+            },
+            "intent_config": {
+                "bad_rate": {
+                    "answer": "We're sorry to hear that.",
+                    "next_step": "102"
+                },
+                "good_rate": {
+                    "answer": "That's great!",
+                    "next_step": "3"
+                },
+                "awesome_rate": {
+                    "answer": "Wow! That's amazing!! I will consider that a five tho :)",
+                    "next_step": "3"
+                },
+                "unknown": {
+                    "answer": "Sorry, I didn't get that.",
+                    "next_step": "2"
+                }
+            }
+        },
+        "3": {
+            "question": "How about the Delivery, how much would you give to it, from 1 to 5?",
+            "intents_dataset": {
+                "1": "bad_rate",
+                "2": "bad_rate",
+                "3": "bad_rate",
+                "4": "good_rate",
+                "5": "good_rate",
+                "one": "bad_rate",
+                "two": "bad_rate",
+                "three": "bad_rate",
+                "four": "good_rate",
+                "five": "good_rate"
+            },
+            "intent_config": {
+                "bad_rate": {
+                    "answer": "hummm, I see...",
+                    "next_step": "103"
+                },
+                "good_rate": {
+                    "answer": "Awesome!",
+                    "next_step": "4"
+                },
+                "unknown": {
+                    "answer": "Come again, please...",
+                    "next_step": "3"
+                }
+            }
+        },
+        "4": {
+            "question": "Can you rate the platform as a whole, please? (1 to 5)",
+            "intents_dataset": {
+                "1": "bad_rate",
+                "2": "bad_rate",
+                "3": "bad_rate",
+                "4": "good_rate",
+                "5": "good_rate",
+                "one": "bad_rate",
+                "two": "bad_rate",
+                "three": "bad_rate",
+                "four": "good_rate",
+                "five": "good_rate"
+            },
+            "intent_config": {
+                "bad_rate": {
+                    "answer": "Ok, I see!",
+                    "next_step": "104"
+                },
+                "good_rate": {
+                    "answer": "Nice to hear that!",
+                    "next_step": "199"
+                },
+                "unknown": {
+                    "answer": "Sorry, can you answer differently?",
+                    "next_step": "4"
+                }
+            }
+        },
+        "102": {
+            "question": "Can you tell us what went wrong with the product?",
+            "intents_dataset": {},
+            "intent_config": {
+                "unknown": {
+                    "answer": "Thank you for your feedback. We'll do our best to improve.",
+                    "next_step": "3"
+                }
+            }
+        },
+        "103": {
+            "question": "What was the issue with the delivery?",
+            "intents_dataset": {},
+            "intent_config": {
+                "unknown": {
+                    "answer": "Ok, thank you for the answer, we'll look into it.",
+                    "next_step": "4"
+                }
+            }
+        },
+        "104": {
+            "question": "What do you think we can improve on the platform?",
+            "intents_dataset": {},
+            "intent_config": {
+                "unknown": {
+                    "answer": "Right! We'll take that into consideration.",
+                    "next_step": "199"
+                }
+            }
+        },
+        "199": {
+            "question": "Thank you for your time. Have a great day! :)",
+            "intents_dataset": {},
+            "intent_config": {}
+        }
+    }
+}
