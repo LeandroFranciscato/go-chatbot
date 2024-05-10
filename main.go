@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"review-chatbot/internal/domain/entity"
 	"review-chatbot/internal/repo"
+
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 //go:embed files/review.json
@@ -18,7 +20,14 @@ func main() {
 		panic(err)
 	}
 
-	res, err := repo.List(context.Background())
+	res, err := repo.List(context.Background(),
+		bson.D{
+			{Key: "$and", Value: bson.A{
+				bson.D{{Key: "email", Value: bson.D{{Key: "$eq", Value: "c1@gmail.com"}}}},
+				bson.D{{Key: "password", Value: bson.D{{Key: "$eq", Value: "pass"}}}},
+			}},
+		},
+	)
 	if err != nil {
 		panic(err)
 	}

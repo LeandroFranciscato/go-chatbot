@@ -2,13 +2,10 @@ package repo
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
-	"log"
 	"review-chatbot/internal/domain/entity"
 
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -34,44 +31,17 @@ func New[T entity.Entity](uri, user, pass, db, collection string) (repo repo[T],
 	return repo, nil
 }
 
-func (repo repo[T]) List(ctx context.Context) (records []T, err error) {
+func (repo repo[T]) List(ctx context.Context, filter bson.D) (records []T, err error) {
 	records = []T{}
-	cur, err := repo.collection.Find(ctx, bson.D{})
+	cur, err := repo.collection.Find(ctx, filter)
 	defer func() {
 		_ = cur.Close(ctx)
 	}()
 	if err != nil {
-		panic(err)
+		return records, errors.New("error finding collection:" + err.Error())
 	}
-	for cur.Next(context.Background()) {
-		var result bson.D
-		err = cur.Decode(&result)
-		if err != nil {
-			log.Fatal(err)
-		}
-		record := new(T)
-		err = repo.parseToEntity(result, record)
-		if err != nil {
-			return records, err
-		}
-		records = append(records, *record)
+	if err = cur.All(ctx, &records); err != nil {
+		return records, errors.New("error parsing results: " + err.Error())
 	}
 	return records, nil
-}
-
-func (repo repo[T]) parseToEntity(mongoBson primitive.D, entity *T) error {
-
-	mongoBytes, _ := bson.Marshal(mongoBson)
-	mapa := map[string]any{}
-	err := bson.Unmarshal(mongoBytes, &mapa)
-	if err != nil {
-		return errors.New("error parsing bson to map:" + err.Error())
-	}
-
-	bytesMap, _ := json.Marshal(mapa)
-	err = json.Unmarshal(bytesMap, entity)
-	if err != nil {
-		return errors.New("error parsing map to entity:" + err.Error())
-	}
-	return nil
 }
