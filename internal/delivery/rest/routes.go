@@ -8,13 +8,31 @@ import (
 )
 
 func (rest rest) InitRoutes() {
+	rest.LoadHTMLFiles()
+	rest.portaRoutes()
+	rest.chatRoutes()
+}
 
-	api := rest.Engine.Group("/api")
-	api.GET("customer/:customer/order/:order/delivery-confirmed", func(c *gin.Context) {
-		c.Redirect(http.StatusPermanentRedirect, "/chat/review/")
+func (rest rest) LoadHTMLFiles() {
+	rest.Engine.LoadHTMLFiles("files/home.html", "files/links.html", "files/form.html")
+}
+
+func (rest rest) portaRoutes() {
+	portalGroup := rest.Engine.Group("/portal")
+	portalGroup.GET("/home", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "home.html", gin.H{})
 	})
 
-	rest.Engine.LoadHTMLFiles("files/form.html")
+	portalGroup.POST("/links", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "links.html", gin.H{})
+	})
+
+	rest.Engine.GET("/", func(ctx *gin.Context) {
+		ctx.Redirect(http.StatusPermanentRedirect, "/portal/home")
+	})
+}
+
+func (rest rest) chatRoutes() {
 
 	chatGroup := rest.Engine.Group("/chat")
 
