@@ -20,7 +20,7 @@ func main() {
 		panic(err)
 	}
 
-	res, err := repo.List(context.Background(),
+	res, err := repo.FindOne(context.Background(),
 		bson.D{
 			{Key: "$and", Value: bson.A{
 				bson.D{{Key: "email", Value: bson.D{{Key: "$eq", Value: "c1@gmail.com"}}}},

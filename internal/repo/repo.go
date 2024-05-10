@@ -31,17 +31,26 @@ func New[T entity.Entity](uri, user, pass, db, collection string) (repo repo[T],
 	return repo, nil
 }
 
-func (repo repo[T]) List(ctx context.Context, filter bson.D) (records []T, err error) {
+func (repo repo[T]) Find(ctx context.Context, filter bson.D) (records []T, err error) {
 	records = []T{}
 	cur, err := repo.collection.Find(ctx, filter)
 	defer func() {
 		_ = cur.Close(ctx)
 	}()
 	if err != nil {
-		return records, errors.New("error finding collection:" + err.Error())
+		return records, errors.New("error finding objects:" + err.Error())
 	}
 	if err = cur.All(ctx, &records); err != nil {
 		return records, errors.New("error parsing results: " + err.Error())
 	}
 	return records, nil
+}
+func (repo repo[T]) FindOne(ctx context.Context, filter bson.D) (result T, err error) {
+	err = repo.collection.FindOne(ctx, filter).Decode(result)
+	if err != nil {
+		if err != mongo.ErrNoDocuments {
+			return result, errors.New("error finding object:" + err.Error())
+		}
+	}
+	return result, nil
 }
