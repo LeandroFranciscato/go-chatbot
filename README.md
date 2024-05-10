@@ -1,4 +1,4 @@
-# Project Title
+# go-chatbot
 
 This project aims to create a chatbot that can interact with users in a meaningful and engaging way.
 
