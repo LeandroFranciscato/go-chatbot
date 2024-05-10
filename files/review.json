@@ -1,7 +1,7 @@
 {
-    "id": 1,
+    "id": "review",
     "name": "review collection flow",
-    "greeting": "",
+    "finalStep": 199,
     "steps": {
         "1": {
             "question": "We noticed you've recently received your Order. We'd love to hear about your experience. Can you spare a few minutes to share your thoughts?",
