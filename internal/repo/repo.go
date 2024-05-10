@@ -6,6 +6,7 @@ import (
 	"review-chatbot/internal/domain/entity"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -45,6 +46,7 @@ func (repo repo[T]) Find(ctx context.Context, filter bson.D) (records []T, err e
 	}
 	return records, nil
 }
+
 func (repo repo[T]) FindOne(ctx context.Context, filter bson.D) (result T, err error) {
 	err = repo.collection.FindOne(ctx, filter).Decode(&result)
 	if err != nil {
@@ -53,4 +55,13 @@ func (repo repo[T]) FindOne(ctx context.Context, filter bson.D) (result T, err e
 		}
 	}
 	return result, nil
+}
+
+func (repo repo[T]) InsertOne(ctx context.Context, entity T) (id primitive.ObjectID, err error) {
+	res, err := repo.collection.InsertOne(ctx, entity)
+	if err != nil {
+		return id, errors.New("error insertind entity:" + err.Error())
+	}
+
+	return res.InsertedID.(primitive.ObjectID), nil
 }

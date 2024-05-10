@@ -19,14 +19,28 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	/*
+			resID, err := repo.InsertOne(context.Background(), entity.Customer{Name: "Giovana", Email: "gihromeu@gmail.com", Password: "pass"})
+			if err != nil {
+				panic(err)
+			}
 
-	res, err := repo.FindOne(context.Background(),
-		bson.D{
-			{Key: "$and", Value: bson.A{
-				bson.D{{Key: "email", Value: bson.D{{Key: "$eq", Value: "c1@gmail.com"}}}},
-				bson.D{{Key: "password", Value: bson.D{{Key: "$eq", Value: "pass"}}}},
-			}},
-		},
+			fmt.Printf("resID: %v\n", resID)
+
+		res, err := repo.FindOne(context.Background(),
+			bson.D{
+				{Key: "$and", Value: bson.A{
+					bson.D{{Key: "email", Value: bson.D{{Key: "$eq", Value: "lbfranciscato@gmail.com"}}}},
+					bson.D{{Key: "password", Value: bson.D{{Key: "$eq", Value: "pass"}}}},
+				}},
+			},
+		)
+		if err != nil {
+			panic(err)
+		}
+	*/
+	res, err := repo.Find(context.Background(),
+		bson.D{},
 	)
 	if err != nil {
 		panic(err)
