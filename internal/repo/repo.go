@@ -46,7 +46,7 @@ func (repo repo[T]) Find(ctx context.Context, filter bson.D) (records []T, err e
 	return records, nil
 }
 func (repo repo[T]) FindOne(ctx context.Context, filter bson.D) (result T, err error) {
-	err = repo.collection.FindOne(ctx, filter).Decode(result)
+	err = repo.collection.FindOne(ctx, filter).Decode(&result)
 	if err != nil {
 		if err != mongo.ErrNoDocuments {
 			return result, errors.New("error finding object:" + err.Error())
