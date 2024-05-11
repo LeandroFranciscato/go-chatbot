@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"review-chatbot/internal/usecase/customer"
 	"review-chatbot/internal/usecase/flow"
 	"review-chatbot/internal/usecase/order"
 
@@ -9,6 +10,7 @@ import (
 
 type Server struct {
 	*gin.Engine
-	Flows []flow.Flow
-	Order order.Order
+	Flows    []flow.Flow
+	Order    order.Order
+	Customer customer.Customer
 }

@@ -7,6 +7,7 @@ import (
 	"review-chatbot/internal/delivery/rest/server"
 	"review-chatbot/internal/domain/entity"
 	"review-chatbot/internal/repo"
+	"review-chatbot/internal/usecase/customer"
 	"review-chatbot/internal/usecase/flow"
 	"review-chatbot/internal/usecase/order"
 	"review-chatbot/internal/util"
@@ -85,6 +86,12 @@ func main() {
 		fmt.Printf("res: %v\n", res)
 	*/
 
+	customerRepo, err := repo.New[entity.Customer]("mongodb://localhost:27017", "root", "example", "chatbot", "customer")
+	if err != nil {
+		panic(err)
+	}
+	customerUsercase := customer.New(customerRepo)
+
 	orderRepo, err := repo.New[entity.Order]("mongodb://localhost:27017", "root", "example", "chatbot", "order")
 	if err != nil {
 		panic(err)
@@ -96,5 +103,5 @@ func main() {
 		panic(err)
 	}
 
-	server.Start(orderUsecase, usecase)
+	server.Start(orderUsecase, customerUsercase, usecase)
 }
