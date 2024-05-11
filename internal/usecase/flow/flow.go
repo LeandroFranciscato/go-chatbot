@@ -20,6 +20,7 @@ type Flow interface {
 	Ask(step int) string
 	Answer(step int, userAnswer string) (int, string)
 	ID() string
+	Name() string
 }
 
 type useCase struct {
@@ -44,6 +45,10 @@ func New(flowJson []byte) (Flow, error) {
 
 func (usecase useCase) ID() string {
 	return usecase.flow.ID
+}
+
+func (usecase useCase) Name() string {
+	return usecase.flow.Name
 }
 
 func (usecase useCase) Ask(step int) string {

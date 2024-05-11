@@ -14,11 +14,15 @@
       </tr>
       {{range .orders}}
       <tr>
-        <td>{{.ID}}</td>
+        <td>{{.ID.Hex}}</td>
         <td>{{.Customer.Name}}</td>
         <td>{{range .Items}} |{{.Name}}| {{end}}</td>
         <td>{{.Status}}</td>
-        <td><a href="/portal/order-delivered/{{.ID}}">Mark as Delivered</a></td>
+        <td>
+          <form action="/portal/order/{{.ID.Hex}}/delivered" method="post">
+            <input type="submit" value="Mark as Delivered" />
+          </form>
+        </td>
       </tr>
       {{end}}
     </table>

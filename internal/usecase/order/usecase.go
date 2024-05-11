@@ -11,7 +11,8 @@ import (
 
 type Order interface {
 	FindByCustomer(ctx context.Context, customer primitive.ObjectID) ([]entity.Order, error)
-	Update(ctx context.Context, order entity.Order) error
+	UpdateOne(ctx context.Context, order entity.Order) error
+	FindOne(ctx context.Context, orderID primitive.ObjectID) (entity.Order, error)
 }
 
 type useCase struct {
@@ -30,6 +31,14 @@ func (usecase useCase) FindByCustomer(ctx context.Context, customer primitive.Ob
 	)
 }
 
-func (usecase useCase) Update(ctx context.Context, order entity.Order) error {
+func (usecase useCase) UpdateOne(ctx context.Context, order entity.Order) error {
 	return usecase.repo.UpdateOne(ctx, order)
+}
+
+func (usecase useCase) FindOne(ctx context.Context, orderID primitive.ObjectID) (entity.Order, error) {
+	return usecase.repo.FindOne(ctx,
+		bson.D{
+			{Key: "_id", Value: orderID},
+		},
+	)
 }

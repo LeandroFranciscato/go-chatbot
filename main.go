@@ -4,6 +4,11 @@ import (
 	"context"
 	_ "embed"
 	"os"
+	"review-chatbot/internal/delivery/rest/server"
+	"review-chatbot/internal/domain/entity"
+	"review-chatbot/internal/repo"
+	"review-chatbot/internal/usecase/flow"
+	"review-chatbot/internal/usecase/order"
 	"review-chatbot/internal/util"
 )
 
@@ -79,17 +84,17 @@ func main() {
 
 		fmt.Printf("res: %v\n", res)
 	*/
-	/*
-		orderRepo, err := repo.New[entity.Order]("mongodb://localhost:27017", "root", "example", "chatbot", "order")
-		if err != nil {
-			panic(err)
-		}
-		orderUsecase := order.New(orderRepo)
 
-		usecase, err := flow.New(reviewFlowJson)
-		if err != nil {
-			panic(err)
-		}
+	orderRepo, err := repo.New[entity.Order]("mongodb://localhost:27017", "root", "example", "chatbot", "order")
+	if err != nil {
+		panic(err)
+	}
+	orderUsecase := order.New(orderRepo)
 
-		server.Start(orderUsecase, usecase)*/
+	usecase, err := flow.New(reviewFlowJson)
+	if err != nil {
+		panic(err)
+	}
+
+	server.Start(orderUsecase, usecase)
 }
