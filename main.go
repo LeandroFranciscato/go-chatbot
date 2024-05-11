@@ -4,7 +4,7 @@ import (
 	"context"
 	_ "embed"
 	"os"
-	"review-chatbot/internal/delivery/rest"
+	"review-chatbot/internal/delivery/rest/server"
 	"review-chatbot/internal/domain/entity"
 	"review-chatbot/internal/repo"
 	"review-chatbot/internal/usecase/flow"
@@ -89,6 +89,5 @@ func main() {
 		panic(err)
 	}
 
-	rest.StartServer(orderUsecase, usecase)
-
+	server.Start(orderUsecase, usecase)
 }
