@@ -6,7 +6,10 @@
   <body>
     <p>{{.answer}}</p>
     <p>{{.question}}</p>
-    <form action="/portal/chat/review" method="post">
+    <form
+      action="/portal/chat/review/customer/{{.customerID}}/order/{{.orderID}}"
+      method="post"
+    >
       <input type="text" name="answer" required />
       <input type="submit" value="Submit" />
       <input type="hidden" name="step" value="{{.step}}" />

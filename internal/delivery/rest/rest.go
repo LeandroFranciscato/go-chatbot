@@ -10,7 +10,7 @@ import (
 
 type Server struct {
 	*gin.Engine
-	Flows    []flow.Flow
-	Order    order.Order
-	Customer customer.Customer
+	ReviewFlow flow.Flow
+	Order      order.Order
+	Customer   customer.Customer
 }

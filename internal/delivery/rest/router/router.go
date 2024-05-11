@@ -23,7 +23,7 @@ func (router router) loadHTMLFiles() {
 	files := []string{
 		"files/home.html",
 		"files/links.html",
-		"files/form.html",
+		"files/chat.html",
 		"files/orders.html",
 	}
 	router.Engine.LoadHTMLFiles(files...)

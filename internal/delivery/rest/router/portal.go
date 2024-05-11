@@ -34,5 +34,5 @@ func (router router) privateRoutes() {
 	})
 
 	router.OrderRoutes(portalGroup)
-	router.chatRoutes(portalGroup)
+	router.reviewFlowRoute(portalGroup)
 }

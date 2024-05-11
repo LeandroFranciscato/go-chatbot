@@ -1,6 +1,7 @@
 package router
 
 import (
+	"fmt"
 	"net/http"
 	"review-chatbot/internal/domain/entity"
 
@@ -59,7 +60,8 @@ func (router router) OrderRoutes(portalGroup *gin.RouterGroup) {
 			return
 		}
 
-		c.Redirect(http.StatusPermanentRedirect, "/portal/chat/review")
+		reviewFlowRoute := fmt.Sprintf("/portal/chat/review/customer/%s/order/%s", customerID, orderID)
+		c.Redirect(http.StatusPermanentRedirect, reviewFlowRoute)
 	})
 
 }

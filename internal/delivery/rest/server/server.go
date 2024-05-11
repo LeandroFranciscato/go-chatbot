@@ -12,16 +12,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Start(order order.Order, customer customer.Customer, flows ...flow.Flow) {
+func Start(order order.Order, customer customer.Customer, reviewFlow flow.Flow) {
 	store := cookie.NewStore([]byte("my-secret-key"))
 	engine := gin.Default()
 	engine.Use(sessions.Sessions("session", store))
 
 	rest := rest.Server{
-		Engine:   engine,
-		Flows:    flows,
-		Order:    order,
-		Customer: customer,
+		Engine:     engine,
+		ReviewFlow: reviewFlow,
+		Order:      order,
+		Customer:   customer,
 	}
 
 	router := router.New(rest)
