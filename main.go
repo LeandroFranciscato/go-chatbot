@@ -4,6 +4,11 @@ import (
 	"context"
 	_ "embed"
 	"os"
+	"review-chatbot/internal/delivery/rest"
+	"review-chatbot/internal/domain/entity"
+	"review-chatbot/internal/repo"
+	"review-chatbot/internal/usecase/flow"
+	"review-chatbot/internal/usecase/order"
 	"review-chatbot/internal/util"
 )
 
@@ -25,10 +30,24 @@ func main() {
 		}
 	}
 	/*
-		repo, err := repo.New[entity.Customer]("mongodb://localhost:27017", "root", "example", "chatbot", "customer")
+		repo, err := repo.New[entity.Order]("mongodb://localhost:27017", "root", "example", "chatbot", "order")
 		if err != nil {
 			panic(err)
 		}
+
+		usecase := order.New(repo)
+		id, err := primitive.ObjectIDFromHex("663eb8bff247a62df85b0ae1")
+		if err != nil {
+			panic(err)
+		}
+		res, err := usecase.FindByCustomer(context.Background(), id)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Printf("res: %v\n", res)
+	*/
+	/*
+
 
 				resID, err := repo.InsertOne(context.Background(), entity.Customer{Name: "Giovana", Email: "gihromeu@gmail.com", Password: "pass"})
 				if err != nil {
@@ -58,10 +77,18 @@ func main() {
 
 		fmt.Printf("res: %v\n", res)
 	*/
-	/*usecase, err := flow.New(reviewFlowJson)
+
+	orderRepo, err := repo.New[entity.Order]("mongodb://localhost:27017", "root", "example", "chatbot", "order")
+	if err != nil {
+		panic(err)
+	}
+	orderUsecase := order.New(orderRepo)
+
+	usecase, err := flow.New(reviewFlowJson)
 	if err != nil {
 		panic(err)
 	}
 
-	rest.StartServer(usecase)*/
+	rest.StartServer(orderUsecase, usecase)
+
 }

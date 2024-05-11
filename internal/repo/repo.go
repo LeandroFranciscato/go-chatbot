@@ -11,11 +11,20 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+type Repo[T entity.Entity] interface {
+	Find(ctx context.Context, filter bson.D) ([]T, error)
+	FindOne(ctx context.Context, filter bson.D) (T, error)
+	InsertOne(ctx context.Context, entity T) (primitive.ObjectID, error)
+	InsertMany(ctx context.Context, entities []T) error
+	DeleteMany(ctx context.Context, filter bson.D) error
+}
+
 type repo[T entity.Entity] struct {
 	collection *mongo.Collection
 }
 
-func New[T entity.Entity](uri, user, pass, db, collection string) (repo repo[T], err error) {
+func New[T entity.Entity](uri, user, pass, db, collection string) (Repo[T], error) {
+	repo := repo[T]{}
 	client, err := mongo.Connect(
 		context.Background(),
 		options.Client().

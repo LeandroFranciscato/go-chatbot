@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func (rest rest) InitRoutes() {
@@ -14,7 +15,7 @@ func (rest rest) InitRoutes() {
 }
 
 func (rest rest) LoadHTMLFiles() {
-	rest.Engine.LoadHTMLFiles("files/home.html", "files/links.html", "files/form.html")
+	rest.Engine.LoadHTMLFiles("files/home.html", "files/links.html", "files/form.html", "files/orders.html")
 }
 
 func (rest rest) portaRoutes() {
@@ -25,6 +26,14 @@ func (rest rest) portaRoutes() {
 
 	portalGroup.POST("/links", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "links.html", gin.H{})
+	})
+
+	portalGroup.GET("/orders", func(c *gin.Context) {
+		customer, _ := primitive.ObjectIDFromHex("663eb8bff247a62df85b0ae1") // must change to the logged customer
+		orders, _ := rest.order.FindByCustomer(c, customer)
+		c.HTML(http.StatusOK, "orders.html", gin.H{
+			"orders": orders,
+		})
 	})
 
 	rest.Engine.GET("/", func(ctx *gin.Context) {

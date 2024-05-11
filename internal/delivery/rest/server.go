@@ -2,6 +2,7 @@ package rest
 
 import (
 	"review-chatbot/internal/usecase/flow"
+	"review-chatbot/internal/usecase/order"
 
 	"github.com/gin-gonic/gin"
 )
@@ -9,14 +10,16 @@ import (
 type rest struct {
 	*gin.Engine
 	flows []flow.Flow
+	order order.Order
 }
 
-func StartServer(flows ...flow.Flow) {
+func StartServer(order order.Order, flows ...flow.Flow) {
 	engine := gin.Default()
 
 	rest := rest{
 		Engine: engine,
 		flows:  flows,
+		order:  order,
 	}
 
 	rest.InitRoutes()

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Orders</title>
+  </head>
+  <body>
+    <p>Orders</p>
+    <table>
+      <tr>
+        <th>ID</th>
+        <th>Customer</th>
+        <th>Items</th>
+        <th>Status</th>
+      </tr>
+      {{range .orders}}
+      <tr>
+        <td>{{.ID}}</td>
+        <td>{{.Customer.Name}}</td>
+        <td>{{range .Items}} |{{.Name}}| {{end}}</td>
+        <td>{{.Status}}</td>
+        <td><a href="/portal/order-delivered/{{.ID}}">Mark as Delivered</a></td>
+      </tr>
+      {{end}}
+    </table>
+  </body>
+</html>
