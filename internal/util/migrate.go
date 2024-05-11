@@ -2,6 +2,8 @@ package util
 
 import (
 	"context"
+	"crypto/md5"
+	"encoding/hex"
 	"errors"
 	"review-chatbot/internal/domain/entity"
 	"review-chatbot/internal/repo"
@@ -12,24 +14,25 @@ import (
 
 func Migrate(ctx context.Context, uri, user, pass, db string) error {
 
+	hash := md5.New()
+	_, err := hash.Write([]byte("doe"))
+	if err != nil {
+		return errors.New("error hashing password: " + err.Error())
+	}
+	hashedPass := hex.EncodeToString(hash.Sum(nil))
+
 	customers := []entity.Customer{
 		{
 			ID:       primitive.NewObjectID(),
 			Name:     "John Doe",
 			Email:    "john@email.com",
-			Password: "doe",
+			Password: hashedPass,
 		},
 		{
 			ID:       primitive.NewObjectID(),
 			Name:     "Jane Doe",
 			Email:    "jane@email.com",
-			Password: "janedoe",
-		},
-		{
-			ID:       primitive.NewObjectID(),
-			Name:     "John Smith",
-			Email:    "jsmith@email.com",
-			Password: "smith",
+			Password: hashedPass,
 		},
 	}
 
@@ -60,7 +63,7 @@ func Migrate(ctx context.Context, uri, user, pass, db string) error {
 		},
 		{
 			ID:       primitive.NewObjectID(),
-			Customer: customers[1],
+			Customer: customers[0],
 			Items: []entity.Item{
 				Items[0],
 			},
@@ -68,7 +71,7 @@ func Migrate(ctx context.Context, uri, user, pass, db string) error {
 		},
 		{
 			ID:       primitive.NewObjectID(),
-			Customer: customers[2],
+			Customer: customers[1],
 			Items: []entity.Item{
 				Items[1],
 				Items[2],

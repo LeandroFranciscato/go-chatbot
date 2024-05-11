@@ -1,6 +1,8 @@
 package router
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"errors"
 	"net/http"
 
@@ -18,14 +20,22 @@ func (router router) loginRoutes() {
 		email := ctx.Request.FormValue("email")
 		password := ctx.Request.FormValue("password")
 
-		customer, err := router.Customer.Login(ctx, email, password)
+		hash := md5.New()
+		_, err := hash.Write([]byte(password))
+		if err != nil {
+			ctx.String(http.StatusInternalServerError, errors.New("error hashing password: "+err.Error()).Error())
+			return
+		}
+		hashedPass := hex.EncodeToString(hash.Sum(nil))
+
+		customer, err := router.Customer.Login(ctx, email, hashedPass)
 		if err != nil {
 			ctx.String(http.StatusInternalServerError, errors.New("error login in: "+err.Error()).Error())
 			return
 		}
 
 		if customer.Email == "" {
-			ctx.HTML(http.StatusOK, "home.html", gin.H{
+			ctx.HTML(http.StatusUnauthorized, "home.html", gin.H{
 				"message": "email/password incorrect",
 			})
 			return

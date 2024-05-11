@@ -1,7 +1,6 @@
 package router
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-contrib/sessions"
@@ -25,7 +24,6 @@ func (router router) privateRoutes() {
 
 	portalGroup.Use(func(ctx *gin.Context) {
 		customerID := sessions.Default(ctx).Get("customerID")
-		fmt.Printf("customerID: %v\n", customerID)
 		if customerID == nil {
 			ctx.AbortWithStatus(http.StatusUnauthorized)
 		}
