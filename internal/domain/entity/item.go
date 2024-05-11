@@ -7,6 +7,6 @@ type Item struct {
 	Name string             `json:"name"      bson:"name"`
 }
 
-func (item Item) ToString() string {
-	return item.ID.String() + " - " + item.Name
+func (item Item) GetID() primitive.ObjectID {
+	return item.ID
 }

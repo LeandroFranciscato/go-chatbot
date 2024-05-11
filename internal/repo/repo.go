@@ -17,6 +17,7 @@ type Repo[T entity.Entity] interface {
 	InsertOne(ctx context.Context, entity T) (primitive.ObjectID, error)
 	InsertMany(ctx context.Context, entities []T) error
 	DeleteMany(ctx context.Context, filter bson.D) error
+	UpdateOne(ctx context.Context, entity T) error
 }
 
 type repo[T entity.Entity] struct {
@@ -92,6 +93,25 @@ func (repo repo[T]) DeleteMany(ctx context.Context, filter bson.D) error {
 	_, err := repo.collection.DeleteMany(ctx, filter)
 	if err != nil {
 		return errors.New("error deleting entity:" + err.Error())
+	}
+
+	return nil
+}
+
+// create the update One function
+
+func (repo repo[T]) UpdateOne(ctx context.Context, entity T) error {
+	_, err := repo.collection.UpdateOne(
+		ctx,
+		bson.D{
+			{Key: "_id", Value: entity.GetID()},
+		},
+		bson.D{
+			{Key: "$set", Value: entity},
+		},
+	)
+	if err != nil {
+		return errors.New("error updating entity:" + err.Error())
 	}
 
 	return nil

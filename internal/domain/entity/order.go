@@ -19,6 +19,6 @@ type Order struct {
 	Status   Status             `json:"status"`
 }
 
-func (order Order) ToString() string {
-	return order.ID.String() + "/" + order.Customer.ToString() + "/" + string(order.Status)
+func (order Order) GetID() primitive.ObjectID {
+	return order.ID
 }

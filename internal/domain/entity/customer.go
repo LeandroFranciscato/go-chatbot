@@ -9,6 +9,6 @@ type Customer struct {
 	Password string             `json:"password"`
 }
 
-func (customer Customer) ToString() string {
-	return customer.ID.String() + " - " + customer.Name
+func (customer Customer) GetID() primitive.ObjectID {
+	return customer.ID
 }

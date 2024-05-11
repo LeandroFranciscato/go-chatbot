@@ -4,11 +4,6 @@ import (
 	"context"
 	_ "embed"
 	"os"
-	"review-chatbot/internal/delivery/rest/server"
-	"review-chatbot/internal/domain/entity"
-	"review-chatbot/internal/repo"
-	"review-chatbot/internal/usecase/flow"
-	"review-chatbot/internal/usecase/order"
 	"review-chatbot/internal/util"
 )
 
@@ -35,16 +30,23 @@ func main() {
 			panic(err)
 		}
 
+		id, err := primitive.ObjectIDFromHex("663ed9ec2c2b9af97e15ccc8")
+		if err != nil {
+			panic(err)
+		}
+
+		one, err := repo.FindOne(context.Background(), bson.D{{Key: "_id", Value: id}})
+		if err != nil {
+			panic(err)
+		}
+		one.Status = entity.OrderStatusDelivered
+
 		usecase := order.New(repo)
-		id, err := primitive.ObjectIDFromHex("663eb8bff247a62df85b0ae1")
+
+		err = usecase.Update(context.Background(), one)
 		if err != nil {
 			panic(err)
 		}
-		res, err := usecase.FindByCustomer(context.Background(), id)
-		if err != nil {
-			panic(err)
-		}
-		fmt.Printf("res: %v\n", res)
 	*/
 	/*
 
@@ -77,17 +79,17 @@ func main() {
 
 		fmt.Printf("res: %v\n", res)
 	*/
+	/*
+		orderRepo, err := repo.New[entity.Order]("mongodb://localhost:27017", "root", "example", "chatbot", "order")
+		if err != nil {
+			panic(err)
+		}
+		orderUsecase := order.New(orderRepo)
 
-	orderRepo, err := repo.New[entity.Order]("mongodb://localhost:27017", "root", "example", "chatbot", "order")
-	if err != nil {
-		panic(err)
-	}
-	orderUsecase := order.New(orderRepo)
+		usecase, err := flow.New(reviewFlowJson)
+		if err != nil {
+			panic(err)
+		}
 
-	usecase, err := flow.New(reviewFlowJson)
-	if err != nil {
-		panic(err)
-	}
-
-	server.Start(orderUsecase, usecase)
+		server.Start(orderUsecase, usecase)*/
 }

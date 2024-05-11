@@ -11,6 +11,7 @@ import (
 
 type Order interface {
 	FindByCustomer(ctx context.Context, customer primitive.ObjectID) ([]entity.Order, error)
+	Update(ctx context.Context, order entity.Order) error
 }
 
 type useCase struct {
@@ -27,4 +28,8 @@ func (usecase useCase) FindByCustomer(ctx context.Context, customer primitive.Ob
 			{Key: "customer._id", Value: customer},
 		},
 	)
+}
+
+func (usecase useCase) Update(ctx context.Context, order entity.Order) error {
+	return usecase.repo.UpdateOne(ctx, order)
 }
