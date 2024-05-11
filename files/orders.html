@@ -19,7 +19,10 @@
         <td>{{range .Items}} |{{.Name}}| {{end}}</td>
         <td>{{.Status}}</td>
         <td>
-          <form action="/portal/order/{{.ID.Hex}}/delivered" method="post">
+          <form
+            action="/portal/customer/{{.Customer.ID.Hex}}/order/{{.ID.Hex}}/delivered"
+            method="post"
+          >
             <input type="submit" value="Mark as Delivered" />
           </form>
         </td>

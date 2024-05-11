@@ -26,14 +26,28 @@ func (router router) OrderRoutes(portalGroup *gin.RouterGroup) {
 		})
 	})
 
-	portalGroup.POST("/order/:id/delivered", func(c *gin.Context) {
-		orderID := c.Param("id")
-		objectId, err := primitive.ObjectIDFromHex(orderID)
+	portalGroup.POST("/customer/:customerID/order/:orderID/delivered", func(c *gin.Context) {
+
+		customerID := c.Param("customerID")
+		sessionCustomerID := sessions.Default(c).Get("customerID").(string)
+		if customerID != sessionCustomerID {
+			c.AbortWithStatus(http.StatusUnauthorized)
+		}
+
+		customerObjID, err := primitive.ObjectIDFromHex(customerID)
 		if err != nil {
-			c.String(http.StatusBadRequest, "error parsing object id: "+err.Error())
+			c.String(http.StatusBadRequest, "error parsing customer object id: "+err.Error())
 			return
 		}
-		order, err := router.Order.FindOne(c, objectId)
+
+		orderID := c.Param("orderID")
+		orderObjID, err := primitive.ObjectIDFromHex(orderID)
+		if err != nil {
+			c.String(http.StatusBadRequest, "error parsing order object id: "+err.Error())
+			return
+		}
+
+		order, err := router.Order.FindOne(c, customerObjID, orderObjID)
 		if err != nil {
 			c.String(http.StatusBadRequest, "error finding order: "+err.Error())
 			return
@@ -45,7 +59,7 @@ func (router router) OrderRoutes(portalGroup *gin.RouterGroup) {
 			return
 		}
 
-		c.Redirect(http.StatusPermanentRedirect, "/chat/review")
+		c.Redirect(http.StatusPermanentRedirect, "/portal/chat/review")
 	})
 
 }

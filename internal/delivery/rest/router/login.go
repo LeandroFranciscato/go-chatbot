@@ -8,9 +8,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (router router) loginRoutes(portalGroup *gin.RouterGroup) {
+func (router router) loginRoutes() {
 
-	portalGroup.POST("login", func(ctx *gin.Context) {
+	router.Engine.GET("/home", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "home.html", gin.H{})
+	})
+
+	router.Engine.POST("/login", func(ctx *gin.Context) {
 		email := ctx.Request.FormValue("email")
 		password := ctx.Request.FormValue("password")
 

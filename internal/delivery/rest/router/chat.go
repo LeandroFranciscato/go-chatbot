@@ -7,9 +7,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (router router) chatRoutes() {
+func (router router) chatRoutes(portalGroup *gin.RouterGroup) {
 
-	chatGroup := router.Engine.Group("/chat")
+	chatGroup := portalGroup.Group("/chat")
 
 	for _, flow := range router.Flows {
 

@@ -1,25 +1,40 @@
 package router
 
 import (
+	"fmt"
 	"net/http"
 
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
 func (router router) portalRoutes() {
+	router.publicRoutes()
+	router.privateRoutes()
+}
+
+func (router router) publicRoutes() {
+	router.loginRoutes()
+	router.Engine.GET("/", func(ctx *gin.Context) {
+		ctx.Redirect(http.StatusPermanentRedirect, "/home")
+	})
+}
+
+func (router router) privateRoutes() {
 	portalGroup := router.Engine.Group("/portal")
-	portalGroup.GET("/home", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "home.html", gin.H{})
+
+	portalGroup.Use(func(ctx *gin.Context) {
+		customerID := sessions.Default(ctx).Get("customerID")
+		fmt.Printf("customerID: %v\n", customerID)
+		if customerID == nil {
+			ctx.AbortWithStatus(http.StatusUnauthorized)
+		}
 	})
 
 	portalGroup.POST("/links", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "links.html", gin.H{})
 	})
 
-	router.Engine.GET("/", func(ctx *gin.Context) {
-		ctx.Redirect(http.StatusPermanentRedirect, "/portal/home")
-	})
-
-	router.loginRoutes(portalGroup)
 	router.OrderRoutes(portalGroup)
+	router.chatRoutes(portalGroup)
 }
