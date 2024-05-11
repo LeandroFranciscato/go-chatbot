@@ -65,3 +65,25 @@ func (repo repo[T]) InsertOne(ctx context.Context, entity T) (id primitive.Objec
 
 	return res.InsertedID.(primitive.ObjectID), nil
 }
+
+func (repo repo[T]) InsertMany(ctx context.Context, entities []T) error {
+	iEntities := []any{}
+	for _, entity := range entities {
+		iEntities = append(iEntities, entity)
+	}
+	_, err := repo.collection.InsertMany(ctx, iEntities)
+	if err != nil {
+		return errors.New("error inserting entity:" + err.Error())
+	}
+
+	return nil
+}
+
+func (repo repo[T]) DeleteMany(ctx context.Context, filter bson.D) error {
+	_, err := repo.collection.DeleteMany(ctx, filter)
+	if err != nil {
+		return errors.New("error deleting entity:" + err.Error())
+	}
+
+	return nil
+}
