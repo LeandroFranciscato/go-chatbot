@@ -22,3 +22,7 @@ type Order struct {
 func (order Order) GetID() primitive.ObjectID {
 	return order.ID
 }
+
+func (order Order) GetCollectionName() string {
+	return "order"
+}

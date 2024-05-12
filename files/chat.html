@@ -31,7 +31,7 @@
         display: inline-block;
         padding: 10px 15px;
         margin: 5px;
-        max-width: 70%;
+        max-width: 80%;
         overflow-wrap: break-word;
         align-self: flex-end;
       }
@@ -44,7 +44,7 @@
         display: inline-block;
         padding: 10px 15px;
         margin: 5px;
-        max-width: 70%;
+        max-width: 80%;
         overflow-wrap: break-word;
         align-self: flex-start;
       }
@@ -56,6 +56,7 @@
         <p>{{.historyHTML}}</p>
       </div>
       <div class="chat-input">
+        {{if not .readonly}}
         <form
           action="/portal/chat/review/customer/{{.customerID}}/order/{{.orderID}}"
           method="post"
@@ -71,11 +72,15 @@
           <input type="submit" value="Send" class="btn btn-primary" />
           {{else}}
           <a href="/chat" class="button btn btn-primary">Continue to Chat</a>
+          <a href="/portal/orders" class="button btn btn-primary">Orders</a>
           {{end}}
           <input type="hidden" name="step" value="{{.step}}" />
           <input type="hidden" name="order" value="{{.order}}" />
           <input type="hidden" name="history" value="{{.history}}" />
         </form>
+        {{else}}
+        <a href="/portal/orders" class="button btn btn-primary">Orders</a>
+        {{end}}
       </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>

@@ -98,8 +98,6 @@ func (repo repo[T]) DeleteMany(ctx context.Context, filter bson.D) error {
 	return nil
 }
 
-// create the update One function
-
 func (repo repo[T]) UpdateOne(ctx context.Context, entity T) error {
 	_, err := repo.collection.UpdateOne(
 		ctx,

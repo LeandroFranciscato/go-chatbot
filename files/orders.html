@@ -19,12 +19,21 @@
         <td>{{range .Items}} |{{.Name}}| {{end}}</td>
         <td>{{.Status}}</td>
         <td>
+          {{if ne .Status "delivered"}}
           <form
             action="/portal/customer/{{.Customer.ID.Hex}}/order/{{.ID.Hex}}/delivered"
             method="post"
           >
             <input type="submit" value="Mark as Delivered" />
           </form>
+          {{else}}
+          <form
+            action="/portal/chat/customer/{{.Customer.ID.Hex}}/order/{{.ID.Hex}}"
+            method="post"
+          >
+            <input type="submit" value="See Review" />
+          </form>
+          {{end}}
         </td>
       </tr>
       {{end}}

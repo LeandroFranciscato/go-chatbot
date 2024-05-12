@@ -10,3 +10,7 @@ type Item struct {
 func (item Item) GetID() primitive.ObjectID {
 	return item.ID
 }
+
+func (item Item) GetCollectionName() string {
+	return "item"
+}

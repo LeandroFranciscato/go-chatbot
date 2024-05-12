@@ -12,3 +12,7 @@ type Customer struct {
 func (customer Customer) GetID() primitive.ObjectID {
 	return customer.ID
 }
+
+func (customer Customer) GetCollectionName() string {
+	return "customer"
+}

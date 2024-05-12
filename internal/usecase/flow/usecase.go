@@ -1,6 +1,7 @@
 package flow
 
 import (
+	"context"
 	_ "embed"
 	"encoding/json"
 	"errors"
@@ -11,30 +12,35 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/jdkato/prose/v2"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 //go:embed files/stop_words.json
 var stopWordsJson []byte
 
 type Flow interface {
-	Ask(step int) string
-	Answer(step int, userAnswer string) (int, string)
 	ID() string
 	FinalStep() int
 	Name() string
+	Ask(step int) string
+	Answer(step int, userAnswer string) (int, string)
+	SaveHistory(ctx context.Context, customerID string, orderID string, history string) error
+	GetHistory(ctx context.Context, customerID string, orderID string) (entity.ChatHistory, error)
 }
 
 type useCase struct {
-	stopWords map[string]struct{}
-	flow      api.Flow
-	orderRepo repo.Repo[entity.Order]
+	stopWords       map[string]struct{}
+	flow            api.Flow
+	chatHistoryRepo repo.Repo[entity.ChatHistory]
 }
 
-func New(flowJson []byte, orderRepo repo.Repo[entity.Order]) (Flow, error) {
+func New(flowJson []byte, chatHistoryRepo repo.Repo[entity.ChatHistory]) (Flow, error) {
 	usecase := useCase{
-		orderRepo: orderRepo,
+		chatHistoryRepo: chatHistoryRepo,
 	}
 
 	err := json.Unmarshal(flowJson, &usecase.flow)
@@ -74,6 +80,53 @@ func (usecase useCase) Answer(step int, userAnswer string) (int, string) {
 	}
 	nextStep, _ := strconv.Atoi(intentAnswer.NextStep)
 	return nextStep, intentAnswer.Answer
+}
+
+func (usecase useCase) SaveHistory(ctx context.Context, customerID string, orderID string, history string) error {
+	chatHistory, err := usecase.GetHistory(ctx, customerID, orderID)
+	if err != nil {
+		return errors.New("error finding chat history: " + err.Error())
+	}
+	if chatHistory.ID.IsZero() {
+		customerObjID, _ := primitive.ObjectIDFromHex(customerID)
+		orderObjID, _ := primitive.ObjectIDFromHex(orderID)
+
+		_, err = usecase.chatHistoryRepo.InsertOne(ctx, entity.ChatHistory{
+			CustomerID: customerObjID,
+			OrderID:    orderObjID,
+			History:    history,
+			Timestamp:  time.Now(),
+		})
+		if err != nil {
+			return errors.New("error inserting chat history: " + err.Error())
+		}
+		return nil
+	}
+
+	chatHistory.History = history
+	err = usecase.chatHistoryRepo.UpdateOne(ctx, chatHistory)
+	if err != nil {
+		return errors.New("error updating chat history: " + err.Error())
+	}
+	return nil
+}
+
+func (usecase useCase) GetHistory(ctx context.Context, customerID string, orderID string) (entity.ChatHistory, error) {
+	customerObjID, _ := primitive.ObjectIDFromHex(customerID)
+	orderObjID, _ := primitive.ObjectIDFromHex(orderID)
+
+	chatHistory, err := usecase.chatHistoryRepo.FindOne(ctx,
+		bson.D{
+			{Key: "$and", Value: bson.A{
+				bson.D{{Key: "customer_id", Value: customerObjID}},
+				bson.D{{Key: "order_id", Value: orderObjID}}},
+			},
+		},
+	)
+	if err != nil {
+		return entity.ChatHistory{}, errors.New("error finding chat history: " + err.Error())
+	}
+	return chatHistory, nil
 }
 
 func (usecase useCase) identifyIntent(message string, intents map[string]string) string {

@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"review-chatbot/internal/domain/entity"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -15,6 +16,25 @@ import (
 func (router router) reviewFlowRoute(portalGroup *gin.RouterGroup) {
 
 	chatGroup := portalGroup.Group("/chat")
+
+	chatGroup.POST("customer/:customerID/order/:orderID", func(c *gin.Context) {
+		customerID := c.Param("customerID")
+		orderID := c.Param("orderID")
+
+		// retrieve chat history
+		history, err := router.ReviewFlow.GetHistory(c, customerID, orderID)
+		if err != nil {
+			c.String(http.StatusInternalServerError, "error finding chat history :"+err.Error())
+			return
+		}
+
+		//render chat form
+		c.HTML(http.StatusOK, "chat.html", gin.H{
+			"title":       router.ReviewFlow.Name(),
+			"historyHTML": template.HTML(history.History),
+			"readonly":    true,
+		})
+	})
 
 	chatGroup.POST("review/customer/:customerID/order/:orderID", func(c *gin.Context) {
 		// identify the step user is
@@ -55,13 +75,14 @@ func (router router) reviewFlowRoute(portalGroup *gin.RouterGroup) {
 
 		// identify if there is an user answer (avoid calling in first step)
 		history := c.Request.FormValue("history")
+		timestamp := time.Now().Format(time.DateTime)
 		nextStep := step
 		botAnswer := ""
 		userAnswer := c.Request.FormValue("answer")
 		if userAnswer != "" {
-			history += `<div class="user-message"><b>You:</b> ` + userAnswer + `</div>`
+			history += `<div class="user-message"><b>You:</b> ` + userAnswer + `<br><small>` + timestamp + `</small></div>`
 			nextStep, botAnswer = router.ReviewFlow.Answer(step, userAnswer)
-			history += `<div class="bot-message"><b>Bot:</b> ` + botAnswer + `</div>`
+			history += `<div class="bot-message"><b>Bot:</b> ` + botAnswer + `<br><small>` + timestamp + `</small></div>`
 		}
 
 		// ask the user the next botQuestion
@@ -84,7 +105,14 @@ func (router router) reviewFlowRoute(portalGroup *gin.RouterGroup) {
 			c.String(http.StatusInternalServerError, "error executing template :"+err.Error())
 			return
 		}
-		history += `<div class="bot-message"><b>Bot:</b> ` + botQuestionBuff.String() + `</div>`
+		history += `<div class="bot-message"><b>Bot:</b> ` + botQuestionBuff.String() + `<br><small>` + timestamp + `</small></div>`
+
+		// save the chat history
+		err = router.ReviewFlow.SaveHistory(c, customerID, orderID, history)
+		if err != nil {
+			c.String(http.StatusInternalServerError, "error registering chat :"+err.Error())
+			return
+		}
 
 		//render chat form
 		c.HTML(http.StatusOK, "chat.html", gin.H{

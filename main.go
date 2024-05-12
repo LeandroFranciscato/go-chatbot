@@ -86,19 +86,25 @@ func main() {
 		fmt.Printf("res: %v\n", res)
 	*/
 
-	customerRepo, err := repo.New[entity.Customer]("mongodb://localhost:27017", "root", "example", "chatbot", "customer")
+	customerRepo, err := repo.New[entity.Customer](mongoUri, mongoUser, mongoPass, mongoDb, entity.Customer{}.GetCollectionName())
 	if err != nil {
 		panic(err)
 	}
 	customerUsercase := customer.New(customerRepo)
 
-	orderRepo, err := repo.New[entity.Order]("mongodb://localhost:27017", "root", "example", "chatbot", "order")
+	orderRepo, err := repo.New[entity.Order](mongoUri, mongoUser, mongoPass, mongoDb, entity.Order{}.GetCollectionName())
 	if err != nil {
 		panic(err)
 	}
+
+	chatHistoryRepo, err := repo.New[entity.ChatHistory](mongoUri, mongoUser, mongoPass, mongoDb, entity.ChatHistory{}.GetCollectionName())
+	if err != nil {
+		panic(err)
+	}
+
 	orderUsecase := order.New(orderRepo)
 
-	usecase, err := flow.New(reviewFlowJson, orderRepo)
+	usecase, err := flow.New(reviewFlowJson, chatHistoryRepo)
 	if err != nil {
 		panic(err)
 	}
