@@ -2,7 +2,6 @@ package flow
 
 import (
 	"bytes"
-	"context"
 	_ "embed"
 	"encoding/json"
 	"errors"
@@ -16,17 +15,16 @@ import (
 	"sync"
 
 	"github.com/jdkato/prose/v2"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 //go:embed files/stop_words.json
 var stopWordsJson []byte
 
 type Flow interface {
-	Ask(customerID, orderID string, step int) (template.HTML, error)
+	Ask(order entity.Order, step int) (template.HTML, error)
 	Answer(step int, userAnswer string) (int, string)
 	ID() string
+	FinalStep() int
 	Name() string
 }
 
@@ -57,37 +55,15 @@ func (usecase useCase) ID() string {
 	return usecase.flow.ID
 }
 
+func (usecase useCase) FinalStep() int {
+	return usecase.flow.FinalStep
+}
+
 func (usecase useCase) Name() string {
 	return usecase.flow.Name
 }
 
-func (usecase useCase) Ask(customerID, orderID string, step int) (template.HTML, error) {
-
-	customerObjID, err := primitive.ObjectIDFromHex(customerID)
-	if err != nil {
-		return "", errors.New("error parsing customer obj id: " + err.Error())
-	}
-
-	orderObjID, err := primitive.ObjectIDFromHex(orderID)
-	if err != nil {
-		return "", errors.New("error parsing order obj id: " + err.Error())
-	}
-
-	order, err := usecase.orderRepo.FindOne(context.Background(),
-		bson.D{
-			{Key: "$and", Value: bson.A{
-				bson.D{{Key: "customer._id", Value: customerObjID}},
-				bson.D{{Key: "_id", Value: orderObjID}}},
-			},
-		},
-	)
-	if err != nil {
-		return "", errors.New("error finding order: " + err.Error())
-	}
-
-	if order.ID.IsZero() {
-		return "", errors.New("order not found")
-	}
+func (usecase useCase) Ask(order entity.Order, step int) (template.HTML, error) {
 
 	tmpl, err := template.New("question").Parse(usecase.flow.Steps[strconv.Itoa(step)].Question)
 	if err != nil {

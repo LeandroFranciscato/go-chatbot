@@ -14,14 +14,10 @@ func (router router) OrderRoutes(portalGroup *gin.RouterGroup) {
 
 	portalGroup.GET("/orders", func(c *gin.Context) {
 
-		customerStrID := sessions.Default(c).Get("customerID").(string)
-		customerID, err := primitive.ObjectIDFromHex(customerStrID)
-		if err != nil {
-			c.String(http.StatusBadRequest, "error parsing customer obj id: "+err.Error())
-			return
-		}
+		customerID := sessions.Default(c).Get("customerID").(string)
+		customerObjID, _ := primitive.ObjectIDFromHex(customerID)
 
-		orders, _ := router.Order.FindByCustomer(c, customerID)
+		orders, _ := router.Order.FindByCustomer(c, customerObjID)
 		c.HTML(http.StatusOK, "orders.html", gin.H{
 			"orders": orders,
 		})
@@ -30,23 +26,10 @@ func (router router) OrderRoutes(portalGroup *gin.RouterGroup) {
 	portalGroup.POST("/customer/:customerID/order/:orderID/delivered", func(c *gin.Context) {
 
 		customerID := c.Param("customerID")
-		sessionCustomerID := sessions.Default(c).Get("customerID").(string)
-		if customerID != sessionCustomerID {
-			c.AbortWithStatus(http.StatusUnauthorized)
-		}
-
-		customerObjID, err := primitive.ObjectIDFromHex(customerID)
-		if err != nil {
-			c.String(http.StatusBadRequest, "error parsing customer object id: "+err.Error())
-			return
-		}
+		customerObjID, _ := primitive.ObjectIDFromHex(customerID)
 
 		orderID := c.Param("orderID")
-		orderObjID, err := primitive.ObjectIDFromHex(orderID)
-		if err != nil {
-			c.String(http.StatusBadRequest, "error parsing order object id: "+err.Error())
-			return
-		}
+		orderObjID, _ := primitive.ObjectIDFromHex(orderID)
 
 		order, err := router.Order.FindOne(c, customerObjID, orderObjID)
 		if err != nil {

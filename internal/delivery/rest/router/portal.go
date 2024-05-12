@@ -23,9 +23,16 @@ func (router router) privateRoutes() {
 	portalGroup := router.Engine.Group("/portal")
 
 	portalGroup.Use(func(ctx *gin.Context) {
+		// validate if user is logged in
 		customerID := sessions.Default(ctx).Get("customerID")
 		if customerID == nil {
 			ctx.AbortWithStatus(http.StatusUnauthorized)
+		}
+
+		// validate if the logged user is the owner of the data
+		customerIDParam := ctx.Param("customerID")
+		if customerIDParam != "" && customerID != customerIDParam {
+			ctx.AbortWithStatus(http.StatusForbidden)
 		}
 	})
 

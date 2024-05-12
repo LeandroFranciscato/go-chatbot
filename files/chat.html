@@ -10,9 +10,14 @@
       action="/portal/chat/review/customer/{{.customerID}}/order/{{.orderID}}"
       method="post"
     >
+      {{if not .final}}
       <input type="text" name="answer" required />
       <input type="submit" value="Submit" />
+      {{else}}
+      <a href="/chat" class="button">Continue to Chat</a>
+      {{end}}
       <input type="hidden" name="step" value="{{.step}}" />
+      <input type="hidden" name="order" value="{{.order}}" />
     </form>
   </body>
 </html>
