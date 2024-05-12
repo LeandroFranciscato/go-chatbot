@@ -2,6 +2,7 @@ package router
 
 import (
 	"encoding/json"
+	"html/template"
 	"net/http"
 	"review-chatbot/internal/domain/entity"
 	"strconv"
@@ -25,14 +26,6 @@ func (router router) reviewFlowRoute(portalGroup *gin.RouterGroup) {
 				c.String(http.StatusBadRequest, "error parsing step :"+err.Error())
 				return
 			}
-		}
-
-		// identify if there is an user answer (avoid calling in first step)
-		nextStep := step
-		answer := ""
-		userAnswer := c.Request.FormValue("answer")
-		if userAnswer != "" {
-			nextStep, answer = router.ReviewFlow.Answer(step, userAnswer)
 		}
 
 		// logic to retrieve order from db only in the first step, then reuse it
@@ -59,23 +52,37 @@ func (router router) reviewFlowRoute(portalGroup *gin.RouterGroup) {
 			}
 		}
 
-		// ask the user the next question
-		question, err := router.ReviewFlow.Ask(order, nextStep)
+		// identify if there is an user answer (avoid calling in first step)
+		history := c.Request.FormValue("history")
+		nextStep := step
+		botAnswer := ""
+		userAnswer := c.Request.FormValue("answer")
+		if userAnswer != "" {
+			history += `<div class="user-message"><b>You:</b> ` + userAnswer + `</div>`
+			nextStep, botAnswer = router.ReviewFlow.Answer(step, userAnswer)
+			history += `<div class="bot-message"><b>Bot:</b> ` + botAnswer + `</div>`
+		}
+
+		// ask the user the next botQuestion
+		botQuestion, err := router.ReviewFlow.Ask(order, nextStep)
 		if err != nil {
 			c.String(http.StatusInternalServerError, "error asking :"+err.Error())
 			return
 		}
+		history += `<div class="bot-message"><b>Bot:</b> ` + string(botQuestion) + `</div>`
 
 		//render chat form
 		c.HTML(http.StatusOK, "chat.html", gin.H{
-			"title":      router.ReviewFlow.Name(),
-			"answer":     answer,
-			"question":   question,
-			"step":       strconv.Itoa(nextStep),
-			"customerID": customerID,
-			"orderID":    orderID,
-			"final":      nextStep == router.ReviewFlow.FinalStep(),
-			"order":      orderStr,
+			"title":        router.ReviewFlow.Name(),
+			"bot_answer":   botAnswer,
+			"bot_question": botQuestion,
+			"step":         strconv.Itoa(nextStep),
+			"customerID":   customerID,
+			"orderID":      orderID,
+			"final":        nextStep == router.ReviewFlow.FinalStep(),
+			"order":        orderStr,
+			"historyHTML":  template.HTML(history),
+			"history":      history,
 		})
 	})
 

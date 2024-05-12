@@ -31,7 +31,7 @@
             }
         },
         "2": {
-            "question": "On a scale of 1-5, how would you rate the Products? <br><br> <i>Order Items:</i> {{range .Items}} <br> {{.ID.Hex}} - {{.Name}} {{end}}",
+            "question": "On a scale of 1-5, how would you rate the Products? <br><br> <i>Ordered Items:</i> {{range .Items}} <br> {{.ID.Hex}} - {{.Name}} {{end}}",
             "intents_dataset": {
                 "1": "bad_rate",
                 "2": "bad_rate",

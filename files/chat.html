@@ -2,22 +2,90 @@
 <html>
   <head>
     <title>{{.title}}</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+    <style>
+      .chat-container {
+        width: 60%;
+        margin: 20px auto;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px;
+        background-color: #f8f8f8;
+      }
+
+      .chat-history {
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+        overflow-y: auto;
+        max-height: 400px;
+      }
+      .user-message {
+        text-align: right;
+        color: #ffffff;
+        background-color: #0b93f6;
+        border-radius: 18px;
+        display: inline-block;
+        padding: 10px 15px;
+        margin: 5px;
+        max-width: 70%;
+        overflow-wrap: break-word;
+        align-self: flex-end;
+      }
+
+      .bot-message {
+        text-align: left;
+        color: #000000;
+        background-color: #e5e5ea;
+        border-radius: 18px;
+        display: inline-block;
+        padding: 10px 15px;
+        margin: 5px;
+        max-width: 70%;
+        overflow-wrap: break-word;
+        align-self: flex-start;
+      }
+    </style>
   </head>
   <body>
-    <p>{{.answer}}</p>
-    <p>{{.question}}</p>
-    <form
-      action="/portal/chat/review/customer/{{.customerID}}/order/{{.orderID}}"
-      method="post"
-    >
-      {{if not .final}}
-      <input type="text" name="answer" required />
-      <input type="submit" value="Submit" />
-      {{else}}
-      <a href="/chat" class="button">Continue to Chat</a>
-      {{end}}
-      <input type="hidden" name="step" value="{{.step}}" />
-      <input type="hidden" name="order" value="{{.order}}" />
-    </form>
+    <div class="chat-container">
+      <div class="chat-history" id="chatHistory">
+        <p>{{.historyHTML}}</p>
+      </div>
+      <div class="chat-input">
+        <form
+          action="/portal/chat/review/customer/{{.customerID}}/order/{{.orderID}}"
+          method="post"
+        >
+          {{if not .final}}
+          <input
+            type="text"
+            name="answer"
+            required
+            placeholder="Type your message here..."
+            class="form-control"
+          />
+          <input type="submit" value="Send" class="btn btn-primary" />
+          {{else}}
+          <a href="/chat" class="button btn btn-primary">Continue to Chat</a>
+          {{end}}
+          <input type="hidden" name="step" value="{{.step}}" />
+          <input type="hidden" name="order" value="{{.order}}" />
+          <input type="hidden" name="history" value="{{.history}}" />
+        </form>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        var chatHistory = $("#chatHistory");
+        chatHistory.scrollTop(chatHistory.prop("scrollHeight"));
+        $("input[name='answer']").focus();
+      });
+    </script>
   </body>
 </html>
