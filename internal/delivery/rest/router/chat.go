@@ -12,6 +12,9 @@ func (router router) reviewFlowRoute(portalGroup *gin.RouterGroup) {
 	chatGroup := portalGroup.Group("/chat")
 
 	chatGroup.POST("review/customer/:customerID/order/:orderID", func(c *gin.Context) {
+		customerID := c.Param("customerID")
+		orderID := c.Param("orderID")
+
 		var err error
 		step := 1
 		stepStr := c.Request.FormValue("step")
@@ -19,6 +22,7 @@ func (router router) reviewFlowRoute(portalGroup *gin.RouterGroup) {
 			step, err = strconv.Atoi(stepStr)
 			if err != nil {
 				c.String(http.StatusBadRequest, "error parsing step :"+err.Error())
+				return
 			}
 		}
 
@@ -28,13 +32,20 @@ func (router router) reviewFlowRoute(portalGroup *gin.RouterGroup) {
 		if userAnswer != "" {
 			nextStep, answer = router.ReviewFlow.Answer(step, userAnswer)
 		}
+
+		question, err := router.ReviewFlow.Ask(customerID, orderID, nextStep)
+		if err != nil {
+			c.String(http.StatusInternalServerError, "error asking :"+err.Error())
+			return
+		}
+
 		c.HTML(http.StatusOK, "chat.html", gin.H{
 			"title":      router.ReviewFlow.Name(),
 			"answer":     answer,
-			"question":   router.ReviewFlow.Ask(nextStep),
+			"question":   question,
 			"step":       strconv.Itoa(nextStep),
-			"customerID": c.Param("customerID"),
-			"orderID":    c.Param("orderID"),
+			"customerID": customerID,
+			"orderID":    orderID,
 		})
 	})
 

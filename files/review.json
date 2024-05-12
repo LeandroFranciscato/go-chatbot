@@ -4,7 +4,7 @@
     "finalStep": 199,
     "steps": {
         "1": {
-            "question": "We noticed you've recently received your Order. We'd love to hear about your experience. Can you spare a few minutes to share your thoughts?",
+            "question": "Hi <b>{{.Customer.Name}}</b>! We saw that you've received your Order <b>{{.ID.Hex}}</b>. <br> Could you take a few moments to share your thoughts with us?",
             "intents_dataset": {
                 "Sure, I can do that": "start_review",
                 "Yes, I'd like to give a review": "start_review",
@@ -31,7 +31,7 @@
             }
         },
         "2": {
-            "question": "On a scale of 1-5, how would you rate the Product?",
+            "question": "On a scale of 1-5, how would you rate the Products? <br><br> <i>Order Items:</i> {{range .Items}} <br> {{.ID.Hex}} - {{.Name}} {{end}}",
             "intents_dataset": {
                 "1": "bad_rate",
                 "2": "bad_rate",

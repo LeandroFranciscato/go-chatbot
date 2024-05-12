@@ -98,7 +98,7 @@ func main() {
 	}
 	orderUsecase := order.New(orderRepo)
 
-	usecase, err := flow.New(reviewFlowJson)
+	usecase, err := flow.New(reviewFlowJson, orderRepo)
 	if err != nil {
 		panic(err)
 	}
