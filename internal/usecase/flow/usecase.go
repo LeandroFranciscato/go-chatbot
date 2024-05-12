@@ -1,11 +1,9 @@
 package flow
 
 import (
-	"bytes"
 	_ "embed"
 	"encoding/json"
 	"errors"
-	"html/template"
 	"log"
 	"review-chatbot/internal/domain/api"
 	"review-chatbot/internal/domain/entity"
@@ -21,7 +19,7 @@ import (
 var stopWordsJson []byte
 
 type Flow interface {
-	Ask(order entity.Order, step int) (template.HTML, error)
+	Ask(step int) string
 	Answer(step int, userAnswer string) (int, string)
 	ID() string
 	FinalStep() int
@@ -63,20 +61,8 @@ func (usecase useCase) Name() string {
 	return usecase.flow.Name
 }
 
-func (usecase useCase) Ask(order entity.Order, step int) (template.HTML, error) {
-
-	tmpl, err := template.New("question").Parse(usecase.flow.Steps[strconv.Itoa(step)].Question)
-	if err != nil {
-		return "", errors.New("error creating template: " + err.Error())
-	}
-
-	var buf bytes.Buffer
-	err = tmpl.Execute(&buf, order)
-	if err != nil {
-		return "", errors.New("error executing template: " + err.Error())
-	}
-
-	return template.HTML(buf.String()), nil
+func (usecase useCase) Ask(step int) string {
+	return usecase.flow.Steps[strconv.Itoa(step)].Question
 }
 
 func (usecase useCase) Answer(step int, userAnswer string) (int, string) {

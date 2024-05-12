@@ -1,6 +1,7 @@
 package router
 
 import (
+	"bytes"
 	"encoding/json"
 	"html/template"
 	"net/http"
@@ -64,25 +65,37 @@ func (router router) reviewFlowRoute(portalGroup *gin.RouterGroup) {
 		}
 
 		// ask the user the next botQuestion
-		botQuestion, err := router.ReviewFlow.Ask(order, nextStep)
+		botQuestion := router.ReviewFlow.Ask(nextStep)
 		if err != nil {
 			c.String(http.StatusInternalServerError, "error asking :"+err.Error())
 			return
 		}
-		history += `<div class="bot-message"><b>Bot:</b> ` + string(botQuestion) + `</div>`
+
+		// replace order variables in the botQuestion html
+		tmpl, err := template.New("question").Parse(botQuestion)
+		if err != nil {
+			c.String(http.StatusInternalServerError, "error creating templace :"+err.Error())
+			return
+		}
+
+		var botQuestionBuff bytes.Buffer
+		err = tmpl.Execute(&botQuestionBuff, order)
+		if err != nil {
+			c.String(http.StatusInternalServerError, "error executing template :"+err.Error())
+			return
+		}
+		history += `<div class="bot-message"><b>Bot:</b> ` + botQuestionBuff.String() + `</div>`
 
 		//render chat form
 		c.HTML(http.StatusOK, "chat.html", gin.H{
-			"title":        router.ReviewFlow.Name(),
-			"bot_answer":   botAnswer,
-			"bot_question": botQuestion,
-			"step":         strconv.Itoa(nextStep),
-			"customerID":   customerID,
-			"orderID":      orderID,
-			"final":        nextStep == router.ReviewFlow.FinalStep(),
-			"order":        orderStr,
-			"historyHTML":  template.HTML(history),
-			"history":      history,
+			"title":       router.ReviewFlow.Name(),
+			"step":        strconv.Itoa(nextStep),
+			"customerID":  customerID,
+			"orderID":     orderID,
+			"final":       nextStep == router.ReviewFlow.FinalStep(),
+			"order":       orderStr,
+			"historyHTML": template.HTML(history),
+			"history":     history,
 		})
 	})
 
