@@ -29,16 +29,16 @@ type Flow interface {
 	Ask(step int) string
 	Answer(step int, userAnswer string) (int, string)
 	SaveHistory(ctx context.Context, step int, customerID string, orderID string, history string) error
-	GetHistory(ctx context.Context, customerID string, orderID string) (entity.ChatHistory, error)
+	GetHistory(ctx context.Context, customerID string, orderID string) (entity.Chat, error)
 }
 
 type useCase struct {
 	stopWords       map[string]struct{}
 	flow            api.Flow
-	chatHistoryRepo repo.Repo[entity.ChatHistory]
+	chatHistoryRepo repo.Repo[entity.Chat]
 }
 
-func New(flowJson []byte, chatHistoryRepo repo.Repo[entity.ChatHistory]) (Flow, error) {
+func New(flowJson []byte, chatHistoryRepo repo.Repo[entity.Chat]) (Flow, error) {
 	usecase := useCase{
 		chatHistoryRepo: chatHistoryRepo,
 	}
@@ -91,7 +91,7 @@ func (usecase useCase) SaveHistory(ctx context.Context, step int, customerID str
 		customerObjID, _ := primitive.ObjectIDFromHex(customerID)
 		orderObjID, _ := primitive.ObjectIDFromHex(orderID)
 
-		_, err = usecase.chatHistoryRepo.InsertOne(ctx, entity.ChatHistory{
+		_, err = usecase.chatHistoryRepo.InsertOne(ctx, entity.Chat{
 			CustomerID:  customerObjID,
 			OrderID:     orderObjID,
 			History:     history,
@@ -117,7 +117,7 @@ func (usecase useCase) SaveHistory(ctx context.Context, step int, customerID str
 	return nil
 }
 
-func (usecase useCase) GetHistory(ctx context.Context, customerID string, orderID string) (entity.ChatHistory, error) {
+func (usecase useCase) GetHistory(ctx context.Context, customerID string, orderID string) (entity.Chat, error) {
 	customerObjID, _ := primitive.ObjectIDFromHex(customerID)
 	orderObjID, _ := primitive.ObjectIDFromHex(orderID)
 
@@ -130,7 +130,7 @@ func (usecase useCase) GetHistory(ctx context.Context, customerID string, orderI
 		},
 	)
 	if err != nil {
-		return entity.ChatHistory{}, errors.New("error finding chat history: " + err.Error())
+		return entity.Chat{}, errors.New("error finding chat history: " + err.Error())
 	}
 	return chatHistory, nil
 }

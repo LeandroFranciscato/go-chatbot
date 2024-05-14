@@ -28,6 +28,7 @@ func (router router) privateRoutes() {
 	chatGroup := portalGroup.Group("/chat")
 	router.chat(chatGroup)
 	router.chatHistory(chatGroup)
+	router.chatList(chatGroup)
 }
 
 func (router router) authMiddleware(ctx *gin.Context) {

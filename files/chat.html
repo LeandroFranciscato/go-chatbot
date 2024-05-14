@@ -48,17 +48,15 @@
         overflow-wrap: break-word;
         align-self: flex-start;
       }
-      .top-link {
-        text-align: center;
-        margin-bottom: 20px;
-      }
     </style>
   </head>
   <body>
+    <ul>
+      <li><a href="/portal/order/list">Orders</a></li>
+      <li><a href="/portal/chat/list">Chats</a></li>
+      <li><a href="/portal/chat/help">Help</a></li>
+    </ul>
     <div class="chat-container">
-      <a href="/portal/orders" class="button btn btn-primary top-link"
-        >Orders</a
-      >
       <div class="chat-history" id="chatHistory">
         <p>{{.historyHTML}}</p>
       </div>

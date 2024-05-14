@@ -24,7 +24,8 @@ func (router router) loadHTMLFiles() {
 		"files/home.html",
 		"files/links.html",
 		"files/chat.html",
-		"files/orders.html",
+		"files/order_list.html",
+		"files/chat_list.html",
 	}
 	router.Engine.LoadHTMLFiles(files...)
 }

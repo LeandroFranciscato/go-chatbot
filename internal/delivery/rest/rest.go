@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"review-chatbot/internal/usecase/chat"
 	"review-chatbot/internal/usecase/customer"
 	"review-chatbot/internal/usecase/flow"
 	"review-chatbot/internal/usecase/order"
@@ -13,4 +14,5 @@ type Server struct {
 	ReviewFlow flow.Flow
 	Order      order.Order
 	Customer   customer.Customer
+	Chat       chat.Chat
 }

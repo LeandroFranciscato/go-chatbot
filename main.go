@@ -7,6 +7,7 @@ import (
 	"review-chatbot/internal/delivery/rest/server"
 	"review-chatbot/internal/domain/entity"
 	"review-chatbot/internal/repo"
+	"review-chatbot/internal/usecase/chat"
 	"review-chatbot/internal/usecase/customer"
 	"review-chatbot/internal/usecase/flow"
 	"review-chatbot/internal/usecase/order"
@@ -97,17 +98,24 @@ func main() {
 		panic(err)
 	}
 
-	chatHistoryRepo, err := repo.New[entity.ChatHistory](mongoUri, mongoUser, mongoPass, mongoDb, entity.ChatHistory{}.GetCollectionName())
+	chatHistoryRepo, err := repo.New[entity.Chat](mongoUri, mongoUser, mongoPass, mongoDb, entity.Chat{}.GetCollectionName())
 	if err != nil {
 		panic(err)
 	}
 
 	orderUsecase := order.New(orderRepo)
 
-	usecase, err := flow.New(reviewFlowJson, chatHistoryRepo)
+	chatRepo, err := repo.New[entity.Chat](mongoUri, mongoUser, mongoPass, mongoDb, entity.Chat{}.GetCollectionName())
 	if err != nil {
 		panic(err)
 	}
 
-	server.Start(orderUsecase, customerUsercase, usecase)
+	chatUsecase := chat.New(chatRepo)
+
+	flowUsecase, err := flow.New(reviewFlowJson, chatHistoryRepo)
+	if err != nil {
+		panic(err)
+	}
+
+	server.Start(orderUsecase, customerUsercase, chatUsecase, flowUsecase)
 }

@@ -12,7 +12,7 @@ import (
 )
 
 type Repo[T entity.Entity] interface {
-	Find(ctx context.Context, filter bson.D) ([]T, error)
+	Find(ctx context.Context, filter bson.D, opts ...*options.FindOptions) (records []T, err error)
 	FindOne(ctx context.Context, filter bson.D) (T, error)
 	InsertOne(ctx context.Context, entity T) (primitive.ObjectID, error)
 	InsertMany(ctx context.Context, entities []T) error
@@ -42,9 +42,9 @@ func New[T entity.Entity](uri, user, pass, db, collection string) (Repo[T], erro
 	return repo, nil
 }
 
-func (repo repo[T]) Find(ctx context.Context, filter bson.D) (records []T, err error) {
+func (repo repo[T]) Find(ctx context.Context, filter bson.D, opts ...*options.FindOptions) (records []T, err error) {
 	records = []T{}
-	cur, err := repo.collection.Find(ctx, filter)
+	cur, err := repo.collection.Find(ctx, filter, opts...)
 	defer func() {
 		_ = cur.Close(ctx)
 	}()

@@ -3,6 +3,7 @@ package server
 import (
 	"review-chatbot/internal/delivery/rest"
 	"review-chatbot/internal/delivery/rest/router"
+	"review-chatbot/internal/usecase/chat"
 	"review-chatbot/internal/usecase/customer"
 	"review-chatbot/internal/usecase/flow"
 	"review-chatbot/internal/usecase/order"
@@ -12,7 +13,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Start(order order.Order, customer customer.Customer, reviewFlow flow.Flow) {
+func Start(order order.Order, customer customer.Customer, Chat chat.Chat, reviewFlow flow.Flow) {
 	store := cookie.NewStore([]byte("my-secret-key"))
 	engine := gin.Default()
 	engine.Use(sessions.Sessions("session", store))
@@ -22,6 +23,7 @@ func Start(order order.Order, customer customer.Customer, reviewFlow flow.Flow) 
 		ReviewFlow: reviewFlow,
 		Order:      order,
 		Customer:   customer,
+		Chat:       Chat,
 	}
 
 	router := router.New(rest)

@@ -11,7 +11,7 @@ import (
 
 func (router router) orderList(group *gin.RouterGroup) {
 
-	group.GET("/orders", func(c *gin.Context) {
+	group.GET("order/list", func(c *gin.Context) {
 
 		customerID := sessions.Default(c).Get("customerID").(string)
 		customerObjID, _ := primitive.ObjectIDFromHex(customerID)
@@ -34,7 +34,7 @@ func (router router) orderList(group *gin.RouterGroup) {
 			ordersDto = append(ordersDto, orderDto)
 		}
 
-		c.HTML(http.StatusOK, "orders.html", gin.H{
+		c.HTML(http.StatusOK, "order_list.html", gin.H{
 			"orders": ordersDto,
 		})
 	})

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chat List</title>
+  </head>
+  <body>
+    <ul>
+      <li><a href="/portal/order/list">Orders</a></li>
+      <li><a href="/portal/chat/list">Chats</a></li>
+      <li><a href="/portal/chat/help">Help</a></li>
+    </ul>
+    <p>Chat List</p>
+    <table>
+      <tr>
+        <th>ID</th>
+        <th>Order ID</th>
+        <th>Status</th>
+        <th>Timestamp</th>
+        <th>Current Step</th>
+        <th>Action</th>
+      </tr>
+      {{range .chatList}}
+      <tr>
+        <td>{{.ID.Hex}}</td>
+        <td>{{.OrderID.Hex}}</td>
+        <td>{{.Status}}</td>
+        <td>{{.Timestamp}}</td>
+        <td>{{.CurrentStep}}</td>
+        <td>
+          {{if eq .Status "done"}}
+          <form
+            action="/portal/chat/customer/{{.CustomerID.Hex}}/order/{{.OrderID.Hex}}"
+            method="post"
+          >
+            <input type="submit" value="View History" />
+          </form>
+          {{else}}
+          <form
+            action="/portal/chat/review/customer/{{.CustomerID.Hex}}/order/{{.OrderID.Hex}}"
+            method="post"
+          >
+            <input type="submit" value="Continue Chat" />
+          </form>
+          {{end}}
+        </td>
+      </tr>
+      {{end}}
+    </table>
+  </body>
+</html>

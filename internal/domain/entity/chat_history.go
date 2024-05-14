@@ -13,7 +13,7 @@ const (
 	ChatStatusDone       ChatStatus = "done"
 )
 
-type ChatHistory struct {
+type Chat struct {
 	ID          primitive.ObjectID `json:"id" bson:"_id,omitempty"`
 	CustomerID  primitive.ObjectID `json:"customer_id" bson:"customer_id"`
 	OrderID     primitive.ObjectID `json:"order_id" bson:"order_id"`
@@ -23,10 +23,10 @@ type ChatHistory struct {
 	History     string             `json:"history"`
 }
 
-func (chatHistory ChatHistory) GetID() primitive.ObjectID {
+func (chatHistory Chat) GetID() primitive.ObjectID {
 	return chatHistory.ID
 }
 
-func (chatHistory ChatHistory) GetCollectionName() string {
+func (chatHistory Chat) GetCollectionName() string {
 	return "chat_history"
 }
