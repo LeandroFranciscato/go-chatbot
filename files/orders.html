@@ -19,12 +19,16 @@
         <td>{{range .Items}} |{{.Name}}| {{end}}</td>
         <td>{{.Status}}</td>
         <td>
-          {{if ne .Status "delivered"}}
+          {{if ne .ChatStatus "done"}}
           <form
             action="/portal/customer/{{.Customer.ID.Hex}}/order/{{.ID.Hex}}/delivered"
             method="post"
           >
+            {{if eq .ChatStatus "inProgress"}}
+            <input type="submit" value="Continue Review" />
+            {{else}}
             <input type="submit" value="Mark as Delivered" />
+            {{end}}
           </form>
           {{else}}
           <form

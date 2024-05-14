@@ -48,10 +48,17 @@
         overflow-wrap: break-word;
         align-self: flex-start;
       }
+      .top-link {
+        text-align: center;
+        margin-bottom: 20px;
+      }
     </style>
   </head>
   <body>
     <div class="chat-container">
+      <a href="/portal/orders" class="button btn btn-primary top-link"
+        >Orders</a
+      >
       <div class="chat-history" id="chatHistory">
         <p>{{.historyHTML}}</p>
       </div>
@@ -69,17 +76,15 @@
             placeholder="Type your message here..."
             class="form-control"
           />
+
           <input type="submit" value="Send" class="btn btn-primary" />
           {{else}}
           <a href="/chat" class="button btn btn-primary">Continue to Chat</a>
-          <a href="/portal/orders" class="button btn btn-primary">Orders</a>
           {{end}}
           <input type="hidden" name="step" value="{{.step}}" />
           <input type="hidden" name="order" value="{{.order}}" />
           <input type="hidden" name="history" value="{{.history}}" />
         </form>
-        {{else}}
-        <a href="/portal/orders" class="button btn btn-primary">Orders</a>
         {{end}}
       </div>
     </div>

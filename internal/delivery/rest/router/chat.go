@@ -21,8 +21,8 @@ func (router router) reviewFlowRoute(portalGroup *gin.RouterGroup) {
 		customerID := c.Param("customerID")
 		orderID := c.Param("orderID")
 
-		// retrieve chat history
-		history, err := router.ReviewFlow.GetHistory(c, customerID, orderID)
+		// retrieve chat chatHistory
+		chatHistory, err := router.ReviewFlow.GetHistory(c, customerID, orderID)
 		if err != nil {
 			c.String(http.StatusInternalServerError, "error finding chat history :"+err.Error())
 			return
@@ -31,28 +31,23 @@ func (router router) reviewFlowRoute(portalGroup *gin.RouterGroup) {
 		//render chat form
 		c.HTML(http.StatusOK, "chat.html", gin.H{
 			"title":       router.ReviewFlow.Name(),
-			"historyHTML": template.HTML(history.History),
+			"historyHTML": template.HTML(chatHistory.History),
 			"readonly":    true,
 		})
 	})
 
 	chatGroup.POST("review/customer/:customerID/order/:orderID", func(c *gin.Context) {
-		// identify the step user is
-		var err error
-		step := 1
-		stepStr := c.Request.FormValue("step")
-		if stepStr != "" {
-			step, err = strconv.Atoi(stepStr)
-			if err != nil {
-				c.String(http.StatusBadRequest, "error parsing step :"+err.Error())
-				return
-			}
+		// retrieve chat history
+		customerID := c.Param("customerID")
+		orderID := c.Param("orderID")
+		chatHistory, err := router.ReviewFlow.GetHistory(c, customerID, orderID)
+		if err != nil {
+			c.String(http.StatusInternalServerError, "error finding chat history :"+err.Error())
+			return
 		}
 
 		// logic to retrieve order from db only in the first step, then reuse it
 		orderStr := c.Request.FormValue("order")
-		customerID := c.Param("customerID")
-		orderID := c.Param("orderID")
 		var order entity.Order
 		if orderStr == "" {
 			customerObjID, _ := primitive.ObjectIDFromHex(customerID)
@@ -73,16 +68,42 @@ func (router router) reviewFlowRoute(portalGroup *gin.RouterGroup) {
 			}
 		}
 
+		// identify the step user is
+		step := 1
+		stepStr := c.Request.FormValue("step")
+		if stepStr != "" {
+			step, err = strconv.Atoi(stepStr)
+			if err != nil {
+				c.String(http.StatusBadRequest, "error parsing step :"+err.Error())
+				return
+			}
+		}
+
+		// if user is in a step ahead, just render the chat form
+		if chatHistory.CurrentStep > step {
+			c.HTML(http.StatusOK, "chat.html", gin.H{
+				"title":       router.ReviewFlow.Name(),
+				"step":        strconv.Itoa(chatHistory.CurrentStep),
+				"customerID":  customerID,
+				"orderID":     orderID,
+				"final":       chatHistory.CurrentStep == router.ReviewFlow.FinalStep(),
+				"order":       orderStr,
+				"historyHTML": template.HTML(chatHistory.History),
+				"history":     chatHistory.History,
+			})
+			return
+		}
+
 		// identify if there is an user answer (avoid calling in first step)
-		history := c.Request.FormValue("history")
+		chatHistoryStr := c.Request.FormValue("history")
 		timestamp := time.Now().Format(time.DateTime)
 		nextStep := step
 		botAnswer := ""
 		userAnswer := c.Request.FormValue("answer")
 		if userAnswer != "" {
-			history += `<div class="user-message"><b>You:</b> ` + userAnswer + `<br><small>` + timestamp + `</small></div>`
+			chatHistoryStr += `<div class="user-message"><b>You:</b> ` + userAnswer + `<br><small>` + timestamp + `</small></div>`
 			nextStep, botAnswer = router.ReviewFlow.Answer(step, userAnswer)
-			history += `<div class="bot-message"><b>Bot:</b> ` + botAnswer + `<br><small>` + timestamp + `</small></div>`
+			chatHistoryStr += `<div class="bot-message"><b>Bot:</b> ` + botAnswer + `<br><small>` + timestamp + `</small></div>`
 		}
 
 		// ask the user the next botQuestion
@@ -105,10 +126,10 @@ func (router router) reviewFlowRoute(portalGroup *gin.RouterGroup) {
 			c.String(http.StatusInternalServerError, "error executing template :"+err.Error())
 			return
 		}
-		history += `<div class="bot-message"><b>Bot:</b> ` + botQuestionBuff.String() + `<br><small>` + timestamp + `</small></div>`
+		chatHistoryStr += `<div class="bot-message"><b>Bot:</b> ` + botQuestionBuff.String() + `<br><small>` + timestamp + `</small></div>`
 
 		// save the chat history
-		err = router.ReviewFlow.SaveHistory(c, customerID, orderID, history)
+		err = router.ReviewFlow.SaveHistory(c, nextStep, customerID, orderID, chatHistoryStr)
 		if err != nil {
 			c.String(http.StatusInternalServerError, "error registering chat :"+err.Error())
 			return
@@ -122,8 +143,8 @@ func (router router) reviewFlowRoute(portalGroup *gin.RouterGroup) {
 			"orderID":     orderID,
 			"final":       nextStep == router.ReviewFlow.FinalStep(),
 			"order":       orderStr,
-			"historyHTML": template.HTML(history),
-			"history":     history,
+			"historyHTML": template.HTML(chatHistoryStr),
+			"history":     chatHistoryStr,
 		})
 	})
 

@@ -6,12 +6,21 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+type ChatStatus string
+
+const (
+	ChatStatusInProgress ChatStatus = "inProgress"
+	ChatStatusDone       ChatStatus = "done"
+)
+
 type ChatHistory struct {
-	ID         primitive.ObjectID `json:"id" bson:"_id,omitempty"`
-	CustomerID primitive.ObjectID `json:"customer_id" bson:"customer_id"`
-	OrderID    primitive.ObjectID `json:"order_id" bson:"order_id"`
-	Timestamp  time.Time          `json:"timestamp"`
-	History    string             `json:"history"`
+	ID          primitive.ObjectID `json:"id" bson:"_id,omitempty"`
+	CustomerID  primitive.ObjectID `json:"customer_id" bson:"customer_id"`
+	OrderID     primitive.ObjectID `json:"order_id" bson:"order_id"`
+	Status      ChatStatus         `json:"status"`
+	Timestamp   time.Time          `json:"timestamp"`
+	CurrentStep int                `json:"current_step"`
+	History     string             `json:"history"`
 }
 
 func (chatHistory ChatHistory) GetID() primitive.ObjectID {

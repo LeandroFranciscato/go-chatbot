@@ -28,7 +28,7 @@ type Flow interface {
 	Name() string
 	Ask(step int) string
 	Answer(step int, userAnswer string) (int, string)
-	SaveHistory(ctx context.Context, customerID string, orderID string, history string) error
+	SaveHistory(ctx context.Context, step int, customerID string, orderID string, history string) error
 	GetHistory(ctx context.Context, customerID string, orderID string) (entity.ChatHistory, error)
 }
 
@@ -82,7 +82,7 @@ func (usecase useCase) Answer(step int, userAnswer string) (int, string) {
 	return nextStep, intentAnswer.Answer
 }
 
-func (usecase useCase) SaveHistory(ctx context.Context, customerID string, orderID string, history string) error {
+func (usecase useCase) SaveHistory(ctx context.Context, step int, customerID string, orderID string, history string) error {
 	chatHistory, err := usecase.GetHistory(ctx, customerID, orderID)
 	if err != nil {
 		return errors.New("error finding chat history: " + err.Error())
@@ -92,10 +92,12 @@ func (usecase useCase) SaveHistory(ctx context.Context, customerID string, order
 		orderObjID, _ := primitive.ObjectIDFromHex(orderID)
 
 		_, err = usecase.chatHistoryRepo.InsertOne(ctx, entity.ChatHistory{
-			CustomerID: customerObjID,
-			OrderID:    orderObjID,
-			History:    history,
-			Timestamp:  time.Now(),
+			CustomerID:  customerObjID,
+			OrderID:     orderObjID,
+			History:     history,
+			Status:      entity.ChatStatusInProgress,
+			Timestamp:   time.Now(),
+			CurrentStep: step,
 		})
 		if err != nil {
 			return errors.New("error inserting chat history: " + err.Error())
@@ -104,6 +106,10 @@ func (usecase useCase) SaveHistory(ctx context.Context, customerID string, order
 	}
 
 	chatHistory.History = history
+	chatHistory.CurrentStep = step
+	if usecase.flow.FinalStep == step {
+		chatHistory.Status = entity.ChatStatusDone
+	}
 	err = usecase.chatHistoryRepo.UpdateOne(ctx, chatHistory)
 	if err != nil {
 		return errors.New("error updating chat history: " + err.Error())

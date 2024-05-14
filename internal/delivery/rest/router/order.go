@@ -3,6 +3,7 @@ package router
 import (
 	"fmt"
 	"net/http"
+	"review-chatbot/internal/delivery/rest/dto"
 	"review-chatbot/internal/domain/entity"
 
 	"github.com/gin-contrib/sessions"
@@ -17,9 +18,26 @@ func (router router) OrderRoutes(portalGroup *gin.RouterGroup) {
 		customerID := sessions.Default(c).Get("customerID").(string)
 		customerObjID, _ := primitive.ObjectIDFromHex(customerID)
 
-		orders, _ := router.Order.FindByCustomer(c, customerObjID)
+		orders, err := router.Order.FindByCustomer(c, customerObjID)
+		if err != nil {
+			c.String(http.StatusBadRequest, "error finding orders: "+err.Error())
+			return
+		}
+
+		var ordersDto []dto.Order
+		for _, order := range orders {
+			orderDto := dto.Order{Order: order}
+			chatHistory, err := router.ReviewFlow.GetHistory(c, customerID, order.ID.Hex())
+			if err != nil {
+				c.String(http.StatusBadRequest, "error finding chat history: "+err.Error())
+				return
+			}
+			orderDto.ChatStatus = chatHistory.Status
+			ordersDto = append(ordersDto, orderDto)
+		}
+
 		c.HTML(http.StatusOK, "orders.html", gin.H{
-			"orders": orders,
+			"orders": ordersDto,
 		})
 	})
 
