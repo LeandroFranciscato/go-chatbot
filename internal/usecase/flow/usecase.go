@@ -9,10 +9,10 @@ import (
 	"review-chatbot/internal/domain/api"
 	"review-chatbot/internal/domain/entity"
 	"review-chatbot/internal/repo"
+	"review-chatbot/internal/util"
 	"strconv"
 	"strings"
 	"sync"
-	"time"
 
 	"github.com/jdkato/prose/v2"
 	"go.mongodb.org/mongo-driver/bson"
@@ -36,11 +36,13 @@ type useCase struct {
 	stopWords       map[string]struct{}
 	flow            api.Flow
 	chatHistoryRepo repo.Repo[entity.Chat]
+	timer           util.Time
 }
 
 func New(flowJson []byte, chatHistoryRepo repo.Repo[entity.Chat]) (Flow, error) {
 	usecase := useCase{
 		chatHistoryRepo: chatHistoryRepo,
+		timer:           util.NewTimer(),
 	}
 
 	err := json.Unmarshal(flowJson, &usecase.flow)
@@ -96,7 +98,7 @@ func (usecase useCase) SaveHistory(ctx context.Context, step int, customerID str
 			OrderID:     orderObjID,
 			History:     history,
 			Status:      entity.ChatStatusInProgress,
-			Timestamp:   time.Now(),
+			Timestamp:   usecase.timer.Now(),
 			CurrentStep: step,
 		})
 		if err != nil {
