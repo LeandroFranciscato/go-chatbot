@@ -39,7 +39,11 @@ func (router router) login() {
 
 		session := sessions.Default(ctx)
 		session.Set("customerID", customer.ID.Hex())
-		session.Save()
+		err = session.Save()
+		if err != nil {
+			ctx.String(http.StatusInternalServerError, errors.New("error saving session: "+err.Error()).Error())
+			return
+		}
 
 		ctx.Redirect(http.StatusPermanentRedirect, "/portal/links")
 	})

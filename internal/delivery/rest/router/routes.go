@@ -1,6 +1,7 @@
 package router
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-contrib/sessions"
@@ -24,6 +25,7 @@ func (router router) privateRoutes() {
 	router.links(portalGroup)
 	router.orderList(portalGroup)
 	router.orderDelivered(portalGroup)
+	router.logout(portalGroup)
 
 	chatGroup := portalGroup.Group("/chat")
 	router.chat(chatGroup)
@@ -36,12 +38,14 @@ func (router router) authMiddleware(ctx *gin.Context) {
 	// validate if user is logged in
 	customerID := sessions.Default(ctx).Get("customerID")
 	if customerID == nil {
+		fmt.Println("User not logged in")
 		ctx.AbortWithStatus(http.StatusUnauthorized)
 	}
 
 	// validate if the logged user is the owner of the data
 	customerIDParam := ctx.Param("customerID")
 	if customerIDParam != "" && customerID != customerIDParam {
+		fmt.Println("User not authorized to access this data")
 		ctx.AbortWithStatus(http.StatusForbidden)
 	}
 }
