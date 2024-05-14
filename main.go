@@ -17,6 +17,9 @@ import (
 //go:embed files/review.json
 var reviewFlowJson []byte
 
+//go:embed files/chat.json
+var chatJson []byte
+
 func main() {
 
 	mongoUri := "mongodb://localhost:27017"
@@ -112,10 +115,15 @@ func main() {
 
 	chatUsecase := chat.New(chatRepo)
 
-	flowUsecase, err := flow.New(reviewFlowJson, chatHistoryRepo)
+	reviewFlowUsecase, err := flow.New(reviewFlowJson, chatHistoryRepo)
 	if err != nil {
 		panic(err)
 	}
 
-	server.Start(orderUsecase, customerUsercase, chatUsecase, flowUsecase)
+	chatFlowUsecase, err := flow.New(chatJson, chatHistoryRepo)
+	if err != nil {
+		panic(err)
+	}
+
+	server.Start(orderUsecase, customerUsercase, chatUsecase, reviewFlowUsecase, chatFlowUsecase)
 }

@@ -64,7 +64,11 @@
       </div>
       <div class="chat-input">
         {{if not .readonly}}
-        <form action="/portal/chat/help" method="post">
+        <form
+          action="/portal/chat/review/customer/{{.customerID}}/order/{{.orderID}}"
+          method="post"
+        >
+          {{if not .final}}
           <input
             type="text"
             name="answer"
@@ -72,8 +76,11 @@
             placeholder="Type your message here..."
             class="form-control"
           />
+
           <input type="submit" value="Send" class="btn btn-primary" />
+          {{else}} {{end}}
           <input type="hidden" name="step" value="{{.step}}" />
+          <input type="hidden" name="order" value="{{.order}}" />
           <input type="hidden" name="history" value="{{.history}}" />
         </form>
         {{end}}

@@ -27,6 +27,7 @@ func (router router) privateRoutes() {
 
 	chatGroup := portalGroup.Group("/chat")
 	router.chat(chatGroup)
+	router.chatReview(chatGroup)
 	router.chatHistory(chatGroup)
 	router.chatList(chatGroup)
 }

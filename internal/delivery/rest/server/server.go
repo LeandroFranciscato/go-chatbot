@@ -13,7 +13,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Start(order order.Order, customer customer.Customer, Chat chat.Chat, reviewFlow flow.Flow) {
+func Start(order order.Order, customer customer.Customer, Chat chat.Chat, reviewFlow flow.Flow, chatFlow flow.Flow) {
 	store := cookie.NewStore([]byte("my-secret-key"))
 	engine := gin.Default()
 	engine.Use(sessions.Sessions("session", store))
@@ -24,6 +24,7 @@ func Start(order order.Order, customer customer.Customer, Chat chat.Chat, review
 		Order:      order,
 		Customer:   customer,
 		Chat:       Chat,
+		ChatFlow:   chatFlow,
 	}
 
 	router := router.New(rest)

@@ -12,6 +12,7 @@ import (
 type Server struct {
 	*gin.Engine
 	ReviewFlow flow.Flow
+	ChatFlow   flow.Flow
 	Order      order.Order
 	Customer   customer.Customer
 	Chat       chat.Chat

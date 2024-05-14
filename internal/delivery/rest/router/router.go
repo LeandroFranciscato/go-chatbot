@@ -23,9 +23,10 @@ func (router router) loadHTMLFiles() {
 	files := []string{
 		"files/home.html",
 		"files/links.html",
-		"files/chat.html",
+		"files/chat_review.html",
 		"files/order_list.html",
 		"files/chat_list.html",
+		"files/chat.html",
 	}
 	router.Engine.LoadHTMLFiles(files...)
 }

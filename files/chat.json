@@ -1,0 +1,61 @@
+{
+    "id": "chat",
+    "name": "free chat flow",
+    "finalStep": 199,
+    "steps": {
+        "1": {
+            "question": "",
+            "intents_dataset": {
+                "I want to return an order": "return_order",
+                "I need to check my order status": "order_status",
+                "I need to check my order list": "order_status",
+                "I want to change my password": "change_password",
+                "I want to change my pass": "change_password",
+                "Tell me about you": "bot_info",
+                "Who are you?": "bot_info",
+                "What's your name?": "bot_info",
+                "I need to check my chat list": "chat_list",
+                "this is a test": "generic",
+                "hello there": "generic",
+                "hi": "generic",
+                "how are you": "fine",
+                "how are you feeling": "fine",
+                "how is it going": "fine"
+            },
+            "intent_config": {
+                "return_order": {
+                    "answer": "To return an order, please follow these steps: <br>1. Go to your order list. <br>2. Select the order you want to return. <br>3. Click on 'Return Order'. <br>4. Follow the instructions on the screen.",
+                    "next_step": "1"
+                },
+                "order_status": {
+                    "answer": "You can check your orders status at: <a href='/portal/order/list'>Order List</a>",
+                    "next_step": "1"
+                },
+                "chat_list": {
+                    "answer": "You can check your chat list at: <a href='/portal/chat/list'>Chat List</a>",
+                    "next_step": "1"
+                },
+                "change_password": {
+                    "answer": "To change your password, please follow these steps: <br>1. Go to your account settings. <br>2. Click on 'Change Password'. <br>3. Enter your current password. <br>4. Enter your new password. <br>5. Confirm your new password. <br>6. Click on 'Save Changes'.",
+                    "next_step": "1"
+                },
+                "bot_info": {
+                    "answer": "I'm not an AI yet, but I'll get there!",
+                    "next_step": "1"
+                },
+                "generic": {
+                    "answer": "Hi there!",
+                    "next_step": "1"
+                },
+                "fine": {
+                    "answer": "I'm fine, thank you for asking! How can I assist you today?",
+                    "next_step": "1"
+                },
+                "unknown": {
+                    "answer": "Sorry, I didn't understand your question. Could you please rephrase it?",
+                    "next_step": "1"
+                }
+            }
+        }
+    }
+}

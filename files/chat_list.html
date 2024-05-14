@@ -4,10 +4,12 @@
     <title>Chat List</title>
   </head>
   <body>
+    <form action="/portal/chat/help" method="post">
+      <input type="submit" value="Chat" class="link-button" />
+    </form>
     <ul>
       <li><a href="/portal/order/list">Orders</a></li>
-      <li><a href="/portal/chat/list">Chats</a></li>
-      <li><a href="/portal/chat/help">Help</a></li>
+      <li><a href="/portal/chat/list">Chat History</a></li>
     </ul>
     <p>Chat List</p>
     <table>
@@ -34,6 +36,10 @@
           >
             <input type="submit" value="View History" />
           </form>
+          {{else}} {{if eq .OrderID.Hex "000000000000000000000000"}}
+          <form action="/portal/chat/help" method="post">
+            <input type="submit" value="Continue Chat" />
+          </form>
           {{else}}
           <form
             action="/portal/chat/review/customer/{{.CustomerID.Hex}}/order/{{.OrderID.Hex}}"
@@ -41,7 +47,7 @@
           >
             <input type="submit" value="Continue Chat" />
           </form>
-          {{end}}
+          {{end}} {{end}}
         </td>
       </tr>
       {{end}}
