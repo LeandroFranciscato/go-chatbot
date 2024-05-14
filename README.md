@@ -26,3 +26,11 @@ cd go-chatbot
 go mod tidy
 go run main.go
 ```
+
+Set the environment variable `MIGRATE` to have a initial mock data for tests purpose.
+
+e.g.:
+
+```bash
+MIGRATE=1 go run main.go
+```
