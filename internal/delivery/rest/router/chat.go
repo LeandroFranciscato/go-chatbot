@@ -3,6 +3,7 @@ package router
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"html/template"
 	"net/http"
 	"review-chatbot/internal/domain/entity"
@@ -13,30 +14,9 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func (router router) reviewFlowRoute(portalGroup *gin.RouterGroup) {
+func (router router) chat(group *gin.RouterGroup) {
 
-	chatGroup := portalGroup.Group("/chat")
-
-	chatGroup.POST("customer/:customerID/order/:orderID", func(c *gin.Context) {
-		customerID := c.Param("customerID")
-		orderID := c.Param("orderID")
-
-		// retrieve chat chatHistory
-		chatHistory, err := router.ReviewFlow.GetHistory(c, customerID, orderID)
-		if err != nil {
-			c.String(http.StatusInternalServerError, "error finding chat history :"+err.Error())
-			return
-		}
-
-		//render chat form
-		c.HTML(http.StatusOK, "chat.html", gin.H{
-			"title":       router.ReviewFlow.Name(),
-			"historyHTML": template.HTML(chatHistory.History),
-			"readonly":    true,
-		})
-	})
-
-	chatGroup.POST("review/customer/:customerID/order/:orderID", func(c *gin.Context) {
+	group.POST("review/customer/:customerID/order/:orderID", func(c *gin.Context) {
 		// retrieve chat history
 		customerID := c.Param("customerID")
 		orderID := c.Param("orderID")
@@ -46,26 +26,11 @@ func (router router) reviewFlowRoute(portalGroup *gin.RouterGroup) {
 			return
 		}
 
-		// logic to retrieve order from db only in the first step, then reuse it
-		orderStr := c.Request.FormValue("order")
-		var order entity.Order
-		if orderStr == "" {
-			customerObjID, _ := primitive.ObjectIDFromHex(customerID)
-			orderObjID, _ := primitive.ObjectIDFromHex(orderID)
-
-			order, err = router.Order.FindOne(c, customerObjID, orderObjID)
-			if err != nil {
-				c.String(http.StatusInternalServerError, "error finding order :"+err.Error())
-				return
-			}
-			orderBytes, _ := json.Marshal(order)
-			orderStr = string(orderBytes)
-		} else {
-			err = json.Unmarshal([]byte(orderStr), &order)
-			if err != nil {
-				c.String(http.StatusInternalServerError, "error unmarshalling order :"+err.Error())
-				return
-			}
+		// retrieve order
+		orderStr, order, err := router.getOrder(c, customerID, orderID)
+		if err != nil {
+			c.String(http.StatusInternalServerError, "error finding order :"+err.Error())
+			return
 		}
 
 		// identify the step user is
@@ -94,12 +59,12 @@ func (router router) reviewFlowRoute(portalGroup *gin.RouterGroup) {
 			return
 		}
 
-		// identify if there is an user answer (avoid calling in first step)
+		// identify if there is an user answer, avoid calling it in the initial step
 		chatHistoryStr := c.Request.FormValue("history")
+		userAnswer := c.Request.FormValue("answer")
 		timestamp := time.Now().Format(time.DateTime)
 		nextStep := step
 		botAnswer := ""
-		userAnswer := c.Request.FormValue("answer")
 		if userAnswer != "" {
 			chatHistoryStr += `<div class="user-message"><b>You:</b> ` + userAnswer + `<br><small>` + timestamp + `</small></div>`
 			nextStep, botAnswer = router.ReviewFlow.Answer(step, userAnswer)
@@ -113,20 +78,13 @@ func (router router) reviewFlowRoute(portalGroup *gin.RouterGroup) {
 			return
 		}
 
-		// replace order variables in the botQuestion html
-		tmpl, err := template.New("question").Parse(botQuestion)
+		// replace order variables
+		botQuestionReplaced, err := router.replaceOrderVariables(botQuestion, order)
 		if err != nil {
-			c.String(http.StatusInternalServerError, "error creating templace :"+err.Error())
+			c.String(http.StatusInternalServerError, "error replacing order variables :"+err.Error())
 			return
 		}
-
-		var botQuestionBuff bytes.Buffer
-		err = tmpl.Execute(&botQuestionBuff, order)
-		if err != nil {
-			c.String(http.StatusInternalServerError, "error executing template :"+err.Error())
-			return
-		}
-		chatHistoryStr += `<div class="bot-message"><b>Bot:</b> ` + botQuestionBuff.String() + `<br><small>` + timestamp + `</small></div>`
+		chatHistoryStr += `<div class="bot-message"><b>Bot:</b> ` + botQuestionReplaced + `<br><small>` + timestamp + `</small></div>`
 
 		// save the chat history
 		err = router.ReviewFlow.SaveHistory(c, nextStep, customerID, orderID, chatHistoryStr)
@@ -147,5 +105,43 @@ func (router router) reviewFlowRoute(portalGroup *gin.RouterGroup) {
 			"history":     chatHistoryStr,
 		})
 	})
+}
 
+// getOrder retrieves order from db only in the first step, then reuse it
+func (router router) getOrder(c *gin.Context, customerID string, orderID string) (orderStr string, order entity.Order, err error) {
+
+	if orderStr == "" {
+		customerObjID, _ := primitive.ObjectIDFromHex(customerID)
+		orderObjID, _ := primitive.ObjectIDFromHex(orderID)
+
+		order, err = router.Order.FindOne(c, customerObjID, orderObjID)
+		if err != nil {
+			return "", entity.Order{}, errors.New("error finding order: " + err.Error())
+		}
+
+		orderBytes, _ := json.Marshal(order)
+		orderStr = string(orderBytes)
+	} else {
+		err = json.Unmarshal([]byte(orderStr), &order)
+		if err != nil {
+			return "", entity.Order{}, errors.New("error unmarshalling order: " + err.Error())
+		}
+	}
+
+	return orderStr, order, nil
+}
+
+// replaceOrderVariables replaces order variables in the botQuestion html
+func (router router) replaceOrderVariables(botQuestion string, order entity.Order) (string, error) {
+	tmpl, err := template.New("question").Parse(botQuestion)
+	if err != nil {
+		return "", errors.New("error creating templace :" + err.Error())
+	}
+
+	var botQuestionBuff bytes.Buffer
+	err = tmpl.Execute(&botQuestionBuff, order)
+	if err != nil {
+		return "", errors.New("error executing template :" + err.Error())
+	}
+	return botQuestionBuff.String(), nil
 }

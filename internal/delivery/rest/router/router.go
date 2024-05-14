@@ -16,7 +16,7 @@ func New(server rest.Server) router {
 
 func (router router) InitRoutes() {
 	router.loadHTMLFiles()
-	router.portalRoutes()
+	router.routes()
 }
 
 func (router router) loadHTMLFiles() {

@@ -10,11 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (router router) loginRoutes() {
-
-	router.Engine.GET("/home", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "home.html", gin.H{})
-	})
+func (router router) login() {
 
 	router.Engine.POST("/login", func(ctx *gin.Context) {
 		email := ctx.Request.FormValue("email")
