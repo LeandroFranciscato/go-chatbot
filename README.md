@@ -34,3 +34,17 @@ e.g.:
 ```bash
 MIGRATE=1 go run main.go
 ```
+
+## Tools
+
+### build and run
+
+```bash
+make run
+```
+
+### generating mocks
+
+```bash
+make mocks
+```
