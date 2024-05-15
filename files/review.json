@@ -25,7 +25,7 @@
                     "next_step": "199"
                 },
                 "unknown": {
-                    "answer": "Sorry, couldn't understand your answer?",
+                    "answer": "Sorry, couldn't understand your answer? <br> If you wanna talk about other things, we can do that in <form action=\"/portal/chat/help\" method=\"post\" style=\"display: inline-block;\"> <input type=\"submit\" value=\"This Chat\" style=\"background-color: #f8f9fa; color: #343a40; padding: 5px 10px; border: 1px solid #ced4da; cursor: pointer;\"> </form>",
                     "next_step": "1"
                 }
             }
@@ -59,7 +59,7 @@
                     "next_step": "3"
                 },
                 "unknown": {
-                    "answer": "Sorry, I didn't get that.",
+                    "answer": "Sorry, I didn't get that. <br> If you wanna talk about other things, we can do that in <form action=\"/portal/chat/help\" method=\"post\" style=\"display: inline-block;\"> <input type=\"submit\" value=\"This Chat\" style=\"background-color: #f8f9fa; color: #343a40; padding: 5px 10px; border: 1px solid #ced4da; cursor: pointer;\"> </form>",
                     "next_step": "2"
                 }
             }
@@ -88,7 +88,7 @@
                     "next_step": "4"
                 },
                 "unknown": {
-                    "answer": "Come again, please...",
+                    "answer": "Come again, please... <br> If you wanna talk about other things, we can do that in <form action=\"/portal/chat/help\" method=\"post\" style=\"display: inline-block;\"> <input type=\"submit\" value=\"This Chat\" style=\"background-color: #f8f9fa; color: #343a40; padding: 5px 10px; border: 1px solid #ced4da; cursor: pointer;\"> </form>",
                     "next_step": "3"
                 }
             }
@@ -117,7 +117,7 @@
                     "next_step": "199"
                 },
                 "unknown": {
-                    "answer": "Sorry, can you answer differently?",
+                    "answer": "Sorry, can you answer differently? <br> If you wanna talk about other things, we can do that in <form action=\"/portal/chat/help\" method=\"post\" style=\"display: inline-block;\"> <input type=\"submit\" value=\"This Chat\" style=\"background-color: #f8f9fa; color: #343a40; padding: 5px 10px; border: 1px solid #ced4da; cursor: pointer;\"> </form>",
                     "next_step": "4"
                 }
             }

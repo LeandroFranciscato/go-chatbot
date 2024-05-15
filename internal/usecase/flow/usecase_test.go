@@ -109,9 +109,9 @@ func Test_useCase_ID(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			usecase := useCase{
-				stopWords:       tt.fields.stopWords,
-				flow:            tt.fields.flow,
-				chatHistoryRepo: tt.fields.chatHistoryRepo,
+				stopWords: tt.fields.stopWords,
+				flow:      tt.fields.flow,
+				chatRepo:  tt.fields.chatHistoryRepo,
 			}
 			if got := usecase.ID(); got != tt.want {
 				t.Errorf("useCase.ID() = %v, want %v", got, tt.want)
@@ -142,9 +142,9 @@ func Test_useCase_FinalStep(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			usecase := useCase{
-				stopWords:       tt.fields.stopWords,
-				flow:            tt.fields.flow,
-				chatHistoryRepo: tt.fields.chatHistoryRepo,
+				stopWords: tt.fields.stopWords,
+				flow:      tt.fields.flow,
+				chatRepo:  tt.fields.chatHistoryRepo,
 			}
 			if got := usecase.FinalStep(); got != tt.want {
 				t.Errorf("useCase.FinalStep() = %v, want %v", got, tt.want)
@@ -175,9 +175,9 @@ func Test_useCase_Name(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			usecase := useCase{
-				stopWords:       tt.fields.stopWords,
-				flow:            tt.fields.flow,
-				chatHistoryRepo: tt.fields.chatHistoryRepo,
+				stopWords: tt.fields.stopWords,
+				flow:      tt.fields.flow,
+				chatRepo:  tt.fields.chatHistoryRepo,
 			}
 			if got := usecase.Name(); got != tt.want {
 				t.Errorf("useCase.Name() = %v, want %v", got, tt.want)
@@ -219,9 +219,9 @@ func Test_useCase_Ask(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			usecase := useCase{
-				stopWords:       tt.fields.stopWords,
-				flow:            tt.fields.flow,
-				chatHistoryRepo: tt.fields.chatHistoryRepo,
+				stopWords: tt.fields.stopWords,
+				flow:      tt.fields.flow,
+				chatRepo:  tt.fields.chatHistoryRepo,
 			}
 			if got := usecase.Ask(tt.args.step); got != tt.want {
 				t.Errorf("useCase.Ask() = %v, want %v", got, tt.want)
@@ -291,9 +291,9 @@ func Test_useCase_Answer(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			usecase := useCase{
-				stopWords:       tt.fields.stopWords,
-				flow:            tt.fields.flow,
-				chatHistoryRepo: tt.fields.chatHistoryRepo,
+				stopWords: tt.fields.stopWords,
+				flow:      tt.fields.flow,
+				chatRepo:  tt.fields.chatHistoryRepo,
 			}
 			got, got1 := usecase.Answer(tt.args.step, tt.args.userAnswer)
 			if got != tt.want {
@@ -524,10 +524,10 @@ func Test_useCase_SaveHistory(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mockFn(tt.fields.chatHistoryRepo, tt.fields.timer, tt.args)
 			usecase := useCase{
-				stopWords:       tt.fields.stopWords,
-				flow:            tt.fields.flow,
-				chatHistoryRepo: tt.fields.chatHistoryRepo,
-				timer:           tt.fields.timer,
+				stopWords: tt.fields.stopWords,
+				flow:      tt.fields.flow,
+				chatRepo:  tt.fields.chatHistoryRepo,
+				timer:     tt.fields.timer,
 			}
 			err := usecase.SaveHistory(tt.args.ctx, tt.args.step, tt.args.customerID, tt.args.orderID, tt.args.history)
 			if (err != nil) && tt.wantErr != "" && !strings.Contains(err.Error(), tt.wantErr) {

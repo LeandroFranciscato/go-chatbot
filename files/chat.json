@@ -20,9 +20,50 @@
                 "hi": "generic",
                 "how are you": "fine",
                 "how are you feeling": "fine",
-                "how is it going": "fine"
+                "how is it going": "fine",
+                "I want to update my profile": "update_profile",
+                "I need to delete my account": "delete_account",
+                "I want to know about your privacy policy": "privacy_policy",
+                "I need to report a problem": "report_problem",
+                "not working properly": "report_problem",
+                "I want to give feedback": "give_feedback",
+                "I need to know about your terms and conditions": "terms_conditions",
+                "I want to know about your pricing": "pricing_info",
+                "What can you do?": "what_can_you_do"
             },
             "intent_config": {
+                "what_can_you_do": {
+                    "answer": "I can assist you with various tasks such as checking your chat list, order list, updating your profile, reporting a problem, and more. What do you need help with today?",
+                    "next_step": "1"
+                },
+                "update_profile": {
+                    "answer": "To update your profile, please follow these steps: <br>1. Go to your account settings. <br>2. Click on 'Update Profile'. <br>3. Make the necessary changes. <br>4. Click on 'Save Changes'.",
+                    "next_step": "1"
+                },
+                "delete_account": {
+                    "answer": "To delete your account, please contact our support team.",
+                    "next_step": "1"
+                },
+                "privacy_policy": {
+                    "answer": "You can read our privacy policy at: <a href='/portal/privacy'>Privacy Policy</a>",
+                    "next_step": "1"
+                },
+                "report_problem": {
+                    "answer": "To report a problem, please follow these steps: <br>1. Go to 'Report a Problem'. <br>2. Describe the issue in detail. <br>3. Click on 'Submit'.",
+                    "next_step": "1"
+                },
+                "give_feedback": {
+                    "answer": "We appreciate your feedback! Please follow these steps: <br>1. Go to 'Give Feedback'. <br>2. Write your feedback. <br>3. Click on 'Submit'.",
+                    "next_step": "1"
+                },
+                "terms_conditions": {
+                    "answer": "You can read our terms and conditions at: <a href='/portal/terms'>Terms and Conditions</a>",
+                    "next_step": "1"
+                },
+                "pricing_info": {
+                    "answer": "You can check our pricing at: <a href='/portal/pricing'>Pricing</a>",
+                    "next_step": "1"
+                },
                 "return_order": {
                     "answer": "To return an order, please follow these steps: <br>1. Go to your order list. <br>2. Select the order you want to return. <br>3. Click on 'Return Order'. <br>4. Follow the instructions on the screen.",
                     "next_step": "1"

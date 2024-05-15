@@ -33,16 +33,16 @@ type Flow interface {
 }
 
 type useCase struct {
-	stopWords       map[string]struct{}
-	flow            api.Flow
-	chatHistoryRepo repo.Repo[entity.Chat]
-	timer           util.Time
+	stopWords map[string]struct{}
+	flow      api.Flow
+	chatRepo  repo.Repo[entity.Chat]
+	timer     util.Time
 }
 
 func New(flowJson []byte, chatHistoryRepo repo.Repo[entity.Chat]) (Flow, error) {
 	usecase := useCase{
-		chatHistoryRepo: chatHistoryRepo,
-		timer:           util.NewTimer(),
+		chatRepo: chatHistoryRepo,
+		timer:    util.NewTimer(),
 	}
 
 	err := json.Unmarshal(flowJson, &usecase.flow)
@@ -93,7 +93,7 @@ func (usecase useCase) SaveHistory(ctx context.Context, step int, customerID str
 		customerObjID, _ := primitive.ObjectIDFromHex(customerID)
 		orderObjID, _ := primitive.ObjectIDFromHex(orderID)
 
-		_, err = usecase.chatHistoryRepo.InsertOne(ctx, entity.Chat{
+		_, err = usecase.chatRepo.InsertOne(ctx, entity.Chat{
 			CustomerID:  customerObjID,
 			OrderID:     orderObjID,
 			History:     history,
@@ -112,7 +112,7 @@ func (usecase useCase) SaveHistory(ctx context.Context, step int, customerID str
 	if usecase.flow.FinalStep == step {
 		chatHistory.Status = entity.ChatStatusDone
 	}
-	err = usecase.chatHistoryRepo.UpdateOne(ctx, chatHistory)
+	err = usecase.chatRepo.UpdateOne(ctx, chatHistory)
 	if err != nil {
 		return errors.New("error updating chat history: " + err.Error())
 	}
@@ -123,7 +123,7 @@ func (usecase useCase) GetHistory(ctx context.Context, customerID string, orderI
 	customerObjID, _ := primitive.ObjectIDFromHex(customerID)
 	orderObjID, _ := primitive.ObjectIDFromHex(orderID)
 
-	chatHistory, err := usecase.chatHistoryRepo.FindOne(ctx,
+	chatHistory, err := usecase.chatRepo.FindOne(ctx,
 		bson.D{
 			{Key: "$and", Value: bson.A{
 				bson.D{{Key: "customer_id", Value: customerObjID}},
