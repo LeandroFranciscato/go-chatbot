@@ -3,7 +3,8 @@ package repo
 import (
 	"context"
 	"errors"
-	"review-chatbot/internal/domain/entity"
+
+	"github.com/LeandroFranciscato/go-chatbot/internal/domain/entity"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"

@@ -2,8 +2,9 @@ package customer
 
 import (
 	"context"
-	"review-chatbot/internal/domain/entity"
-	"review-chatbot/internal/repo"
+
+	"github.com/LeandroFranciscato/go-chatbot/internal/domain/entity"
+	"github.com/LeandroFranciscato/go-chatbot/internal/repo"
 
 	"go.mongodb.org/mongo-driver/bson"
 )

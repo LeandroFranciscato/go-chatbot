@@ -1,4 +1,4 @@
-module review-chatbot
+module github.com/LeandroFranciscato/go-chatbot
 
 go 1.21
 

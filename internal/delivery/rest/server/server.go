@@ -1,12 +1,12 @@
 package server
 
 import (
-	"review-chatbot/internal/delivery/rest"
-	"review-chatbot/internal/delivery/rest/router"
-	"review-chatbot/internal/usecase/chat"
-	"review-chatbot/internal/usecase/customer"
-	"review-chatbot/internal/usecase/flow"
-	"review-chatbot/internal/usecase/order"
+	"github.com/LeandroFranciscato/go-chatbot/internal/delivery/rest"
+	"github.com/LeandroFranciscato/go-chatbot/internal/delivery/rest/router"
+	"github.com/LeandroFranciscato/go-chatbot/internal/usecase/chat"
+	"github.com/LeandroFranciscato/go-chatbot/internal/usecase/customer"
+	"github.com/LeandroFranciscato/go-chatbot/internal/usecase/flow"
+	"github.com/LeandroFranciscato/go-chatbot/internal/usecase/order"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"

@@ -3,9 +3,10 @@ package customer
 import (
 	"context"
 	"reflect"
-	"review-chatbot/internal/domain/entity"
-	mocks "review-chatbot/mocks/repo"
 	"testing"
+
+	"github.com/LeandroFranciscato/go-chatbot/internal/domain/entity"
+	mocks "github.com/LeandroFranciscato/go-chatbot/mocks/repo"
 
 	"go.mongodb.org/mongo-driver/bson"
 )

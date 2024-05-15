@@ -1,7 +1,7 @@
 package router
 
 import (
-	"review-chatbot/internal/delivery/rest"
+	"github.com/LeandroFranciscato/go-chatbot/internal/delivery/rest"
 )
 
 type router struct {

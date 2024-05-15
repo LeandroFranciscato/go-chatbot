@@ -4,14 +4,15 @@ import (
 	"context"
 	_ "embed"
 	"os"
-	"review-chatbot/internal/delivery/rest/server"
-	"review-chatbot/internal/domain/entity"
-	"review-chatbot/internal/repo"
-	"review-chatbot/internal/usecase/chat"
-	"review-chatbot/internal/usecase/customer"
-	"review-chatbot/internal/usecase/flow"
-	"review-chatbot/internal/usecase/order"
-	"review-chatbot/internal/util"
+
+	"github.com/LeandroFranciscato/go-chatbot/internal/delivery/rest/server"
+	"github.com/LeandroFranciscato/go-chatbot/internal/domain/entity"
+	"github.com/LeandroFranciscato/go-chatbot/internal/repo"
+	"github.com/LeandroFranciscato/go-chatbot/internal/usecase/chat"
+	"github.com/LeandroFranciscato/go-chatbot/internal/usecase/customer"
+	"github.com/LeandroFranciscato/go-chatbot/internal/usecase/flow"
+	"github.com/LeandroFranciscato/go-chatbot/internal/usecase/order"
+	"github.com/LeandroFranciscato/go-chatbot/internal/util"
 )
 
 //go:embed files/review.json

@@ -4,11 +4,12 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
-	"review-chatbot/internal/delivery/rest"
-	"review-chatbot/internal/domain/entity"
-	flowmocks "review-chatbot/mocks/usecase/flow"
-	ordermocks "review-chatbot/mocks/usecase/order"
 	"testing"
+
+	"github.com/LeandroFranciscato/go-chatbot/internal/delivery/rest"
+	"github.com/LeandroFranciscato/go-chatbot/internal/domain/entity"
+	flowmocks "github.com/LeandroFranciscato/go-chatbot/mocks/usecase/flow"
+	ordermocks "github.com/LeandroFranciscato/go-chatbot/mocks/usecase/order"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/mock"

@@ -6,10 +6,11 @@ import (
 	"errors"
 	"html/template"
 	"net/http"
-	"review-chatbot/internal/domain/entity"
-	"review-chatbot/internal/usecase/flow"
 	"strconv"
 	"time"
+
+	"github.com/LeandroFranciscato/go-chatbot/internal/domain/entity"
+	"github.com/LeandroFranciscato/go-chatbot/internal/usecase/flow"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson/primitive"

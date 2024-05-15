@@ -4,7 +4,7 @@ package mocks
 
 import (
 	context "context"
-	entity "review-chatbot/internal/domain/entity"
+	entity "github.com/LeandroFranciscato/go-chatbot/internal/domain/entity"
 
 	mock "github.com/stretchr/testify/mock"
 

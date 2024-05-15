@@ -3,9 +3,10 @@ package router
 import (
 	"html/template"
 	"net/http"
-	"review-chatbot/internal/usecase/flow"
 	"strconv"
 	"time"
+
+	"github.com/LeandroFranciscato/go-chatbot/internal/usecase/flow"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"

@@ -6,13 +6,14 @@ import (
 	"encoding/json"
 	"errors"
 	"log"
-	"review-chatbot/internal/domain/api"
-	"review-chatbot/internal/domain/entity"
-	"review-chatbot/internal/repo"
-	"review-chatbot/internal/util"
 	"strconv"
 	"strings"
 	"sync"
+
+	"github.com/LeandroFranciscato/go-chatbot/internal/domain/api"
+	"github.com/LeandroFranciscato/go-chatbot/internal/domain/entity"
+	"github.com/LeandroFranciscato/go-chatbot/internal/repo"
+	"github.com/LeandroFranciscato/go-chatbot/internal/util"
 
 	"github.com/jdkato/prose/v2"
 	"go.mongodb.org/mongo-driver/bson"

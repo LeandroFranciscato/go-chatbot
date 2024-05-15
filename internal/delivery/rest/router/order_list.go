@@ -2,7 +2,8 @@ package router
 
 import (
 	"net/http"
-	"review-chatbot/internal/delivery/rest/dto"
+
+	"github.com/LeandroFranciscato/go-chatbot/internal/delivery/rest/dto"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"

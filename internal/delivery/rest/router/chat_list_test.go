@@ -4,9 +4,10 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
-	"review-chatbot/internal/delivery/rest"
-	"review-chatbot/internal/domain/entity"
-	chatmocks "review-chatbot/mocks/usecase/chat"
+
+	"github.com/LeandroFranciscato/go-chatbot/internal/delivery/rest"
+	"github.com/LeandroFranciscato/go-chatbot/internal/domain/entity"
+	chatmocks "github.com/LeandroFranciscato/go-chatbot/mocks/usecase/chat"
 
 	"testing"
 

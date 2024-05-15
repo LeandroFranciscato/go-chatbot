@@ -3,10 +3,11 @@ package router
 import (
 	"net/http"
 	"net/http/httptest"
-	"review-chatbot/internal/delivery/rest"
-	"review-chatbot/internal/domain/entity"
-	mocks "review-chatbot/mocks/usecase/customer"
 	"testing"
+
+	"github.com/LeandroFranciscato/go-chatbot/internal/delivery/rest"
+	"github.com/LeandroFranciscato/go-chatbot/internal/domain/entity"
+	mocks "github.com/LeandroFranciscato/go-chatbot/mocks/usecase/customer"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"

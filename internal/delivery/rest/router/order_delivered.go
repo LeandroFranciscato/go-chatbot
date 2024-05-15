@@ -3,7 +3,8 @@ package router
 import (
 	"fmt"
 	"net/http"
-	"review-chatbot/internal/domain/entity"
+
+	"github.com/LeandroFranciscato/go-chatbot/internal/domain/entity"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson/primitive"

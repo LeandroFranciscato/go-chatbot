@@ -1,6 +1,6 @@
 package dto
 
-import "review-chatbot/internal/domain/entity"
+import "github.com/LeandroFranciscato/go-chatbot/internal/domain/entity"
 
 type Order struct {
 	entity.Order
