@@ -11,18 +11,21 @@ import (
 func (router router) chatList(group *gin.RouterGroup) {
 
 	group.GET("list", func(c *gin.Context) {
-
 		customerID := sessions.Default(c).Get("customerID").(string)
-		customerObjID, _ := primitive.ObjectIDFromHex(customerID)
+		router.chatListHandler(c, customerID)
+	})
+}
 
-		chatList, err := router.Chat.FindByCustomer(c, customerObjID)
-		if err != nil {
-			c.String(http.StatusBadRequest, "error finding chat list: "+err.Error())
-			return
-		}
+func (router router) chatListHandler(c *gin.Context, customerID string) {
+	customerObjID, _ := primitive.ObjectIDFromHex(customerID)
 
-		c.HTML(http.StatusOK, "chat_list.html", gin.H{
-			"chatList": chatList,
-		})
+	chatList, err := router.Chat.FindByCustomer(c, customerObjID)
+	if err != nil {
+		c.String(http.StatusBadRequest, "error finding chat list: "+err.Error())
+		return
+	}
+
+	c.HTML(http.StatusOK, "chat_list.html", gin.H{
+		"chatList": chatList,
 	})
 }

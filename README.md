@@ -1,4 +1,3 @@
-
 # go-chatbot
 
 ![Build](https://github.com/LeandroFranciscato/go-chatbot/actions/workflows/go.yml/badge.svg)
@@ -51,3 +50,11 @@ make run
 ```bash
 make mocks
 ```
+
+### genarating testing report
+
+```bash
+make test
+```
+
+Then open `coverage.html`.

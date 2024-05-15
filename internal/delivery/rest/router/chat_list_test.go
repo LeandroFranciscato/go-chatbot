@@ -5,15 +5,17 @@ import (
 	"net/http/httptest"
 	"os"
 	"review-chatbot/internal/delivery/rest"
-	mocks "review-chatbot/mocks/usecase/customer"
+	"review-chatbot/internal/domain/entity"
+	chatmocks "review-chatbot/mocks/usecase/chat"
+
 	"testing"
 
-	"github.com/gin-contrib/sessions"
-	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
+	"github.com/stretchr/testify/mock"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func Test_router_home(t *testing.T) {
+func Test_router_chat_list(t *testing.T) {
 	type fields struct {
 		router router
 	}
@@ -21,34 +23,35 @@ func Test_router_home(t *testing.T) {
 		name   string
 		fields fields
 		status int
-		mockFn func(mock *mocks.Customer)
+		mockFn func(chatmock *chatmocks.Chat)
 	}{
 		{
 			name: "Success",
 			fields: fields{
 				router{
 					Server: rest.Server{
-						Customer: &mocks.Customer{},
+						Chat: &chatmocks.Chat{},
 					},
 				},
 			},
 			status: http.StatusOK,
-			mockFn: func(customerMock *mocks.Customer) {},
+			mockFn: func(chatmock *chatmocks.Chat) {
+				objID, _ := primitive.ObjectIDFromHex("000000000000000000000000")
+				chatmock.EXPECT().FindByCustomer(mock.Anything, objID).Return([]entity.Chat{}, nil)
+			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 
 			// run mock
-			tt.mockFn(tt.fields.router.Server.Customer.(*mocks.Customer))
+			tt.mockFn(tt.fields.router.Server.Chat.(*chatmocks.Chat))
 
 			// prepare router
 			tt.fields.router.Engine = gin.Default()
-			store := cookie.NewStore([]byte("my-secret-key"))
-			tt.fields.router.Engine.Use(sessions.Sessions("session", store))
 
 			// create temp html file
-			fileName := "home.html"
+			fileName := "chat_list.html"
 			_, _ = os.Create(fileName)
 			tt.fields.router.Engine.LoadHTMLFiles(fileName)
 			defer func() {
@@ -56,10 +59,12 @@ func Test_router_home(t *testing.T) {
 			}()
 
 			// add routes
-			tt.fields.router.home()
+			tt.fields.router.Engine.Handle(http.MethodGet, "/portal/chat/list", func(ctx *gin.Context) {
+				tt.fields.router.chatListHandler(ctx, "000000000000000000000000")
+			})
 
 			// prepare request
-			req, _ := http.NewRequest(http.MethodGet, "/home", nil)
+			req, _ := http.NewRequest(http.MethodGet, "/portal/chat/list", nil)
 
 			// serve request
 			w := httptest.NewRecorder()
