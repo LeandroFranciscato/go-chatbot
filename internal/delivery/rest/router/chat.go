@@ -14,13 +14,13 @@ import (
 
 func (router router) chat(group *gin.RouterGroup) {
 	group.POST("help", func(c *gin.Context) {
-		router.chatHandler(c, router.ChatFlow)
+		customerID := sessions.Default(c).Get("customerID").(string)
+		router.chatHandler(c, router.ChatFlow, customerID)
 	})
 }
 
-func (router router) chatHandler(c *gin.Context, flow flow.Flow) {
+func (router router) chatHandler(c *gin.Context, flow flow.Flow, customerID string) {
 	// retrieve chat history
-	customerID := sessions.Default(c).Get("customerID").(string)
 	chatHistory, err := flow.GetHistory(c, customerID, "000000000000000000000000")
 	if err != nil {
 		c.String(http.StatusInternalServerError, "error finding chat history :"+err.Error())

@@ -29,7 +29,8 @@
                 "I want to give feedback": "give_feedback",
                 "I need to know about your terms and conditions": "terms_conditions",
                 "I want to know about your pricing": "pricing_info",
-                "What can you do?": "what_can_you_do"
+                "What can you do?": "what_can_you_do",
+                "thank you": "thank_you"
             },
             "intent_config": {
                 "what_can_you_do": {
@@ -78,6 +79,10 @@
                 },
                 "change_password": {
                     "answer": "To change your password, please follow these steps: <br>1. Go to your account settings. <br>2. Click on 'Change Password'. <br>3. Enter your current password. <br>4. Enter your new password. <br>5. Confirm your new password. <br>6. Click on 'Save Changes'.",
+                    "next_step": "1"
+                },
+                "thank_you": {
+                    "answer": "You're welcome! How can I assist you today?",
                     "next_step": "1"
                 },
                 "bot_info": {

@@ -12,7 +12,7 @@ mocks: mockery
 
 .PHONY: test
 test:
-	go test -v -cover ./... > test_report.txt
-	go test -coverprofile=coverage.out ./...
+	go test -v -cover  ./internal/delivery/... ./internal/repo/... ./internal/usecase/... > test_report.txt
+	go test -coverprofile=coverage.out  ./internal/delivery/... ./internal/repo/... ./internal/usecase/...
 	go tool cover -html=coverage.out -o coverage.html		
 	explorer.exe coverage.html
