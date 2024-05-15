@@ -2,15 +2,26 @@
 <html>
   <head>
     <title>Home</title>
+    <!-- Include Bootstrap CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
   </head>
   <body>
-    <form action="/portal/chat/help" method="post">
-      <input type="submit" value="Chat" class="link-button" />
-    </form>
-    <ul>
-      <li><a href="/portal/order/list">Orders</a></li>
-      <li><a href="/portal/chat/list">Chat History</a></li>
-      <li><a href="/portal/logout">Exit</a></li>
-    </ul>
+    <div class="container">
+      <form action="/portal/chat/help" method="post" class="mb-3">
+        <input type="submit" value="Chat" class="btn btn-primary" />
+      </form>
+      <ul class="list-group">
+        <li class="list-group-item"><a href="/portal/order/list">Orders</a></li>
+        <li class="list-group-item">
+          <a href="/portal/chat/list">Chat History</a>
+        </li>
+        <li class="list-group-item"><a href="/portal/logout">Exit</a></li>
+      </ul>
+    </div>
+    <!-- Include Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
   </body>
 </html>

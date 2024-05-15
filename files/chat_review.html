@@ -8,7 +8,6 @@
     />
     <style>
       .chat-container {
-        width: 60%;
         margin: 20px auto;
         border: 1px solid #ccc;
         border-radius: 5px;
@@ -51,50 +50,54 @@
     </style>
   </head>
   <body>
-    <form action="/portal/chat/help" method="post">
-      <input type="submit" value="Chat" class="link-button" />
-    </form>
-    <ul>
-      <li><a href="/portal/order/list">Orders</a></li>
-      <li><a href="/portal/chat/list">Chat History</a></li>
-      <li><a href="/portal/logout">Exit</a></li>
-    </ul>
-    <div class="chat-container">
-      <div class="chat-history" id="chatHistory">
-        <p>{{.historyHTML}}</p>
-      </div>
-      <div class="chat-input">
-        {{if not .readonly}}
-        <form
-          action="/portal/chat/review/customer/{{.customerID}}/order/{{.orderID}}"
-          method="post"
-        >
-          {{if not .final}}
-          <input
-            type="text"
-            name="answer"
-            required
-            placeholder="Type your message here..."
-            class="form-control"
-          />
+    <div class="container">
+      <form action="/portal/chat/help" method="post" class="mb-3">
+        <input type="submit" value="Chat" class="btn btn-primary" />
+      </form>
+      <ul class="list-group">
+        <li class="list-group-item"><a href="/portal/order/list">Orders</a></li>
+        <li class="list-group-item">
+          <a href="/portal/chat/list">Chat History</a>
+        </li>
+        <li class="list-group-item"><a href="/portal/logout">Exit</a></li>
+      </ul>
+      <div class="chat-container">
+        <div class="chat-history" id="chatHistory">
+          <p>{{.historyHTML}}</p>
+        </div>
+        <div class="chat-input">
+          {{if not .readonly}}
+          <form
+            action="/portal/chat/review/customer/{{.customerID}}/order/{{.orderID}}"
+            method="post"
+          >
+            {{if not .final}}
+            <input
+              type="text"
+              name="answer"
+              required
+              placeholder="Type your message here..."
+              class="form-control"
+            />
 
-          <input type="submit" value="Send" class="btn btn-primary" />
-          {{else}} {{end}}
-          <input type="hidden" name="step" value="{{.step}}" />
-          <input type="hidden" name="order" value="{{.order}}" />
-          <input type="hidden" name="history" value="{{.history}}" />
-        </form>
-        {{end}}
+            <input type="submit" value="Send" class="btn btn-primary" />
+            {{else}} {{end}}
+            <input type="hidden" name="step" value="{{.step}}" />
+            <input type="hidden" name="order" value="{{.order}}" />
+            <input type="hidden" name="history" value="{{.history}}" />
+          </form>
+          {{end}}
+        </div>
       </div>
+      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+      <script>
+        $(document).ready(function () {
+          var chatHistory = $("#chatHistory");
+          chatHistory.scrollTop(chatHistory.prop("scrollHeight"));
+          $("input[name='answer']").focus();
+        });
+      </script>
     </div>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <script>
-      $(document).ready(function () {
-        var chatHistory = $("#chatHistory");
-        chatHistory.scrollTop(chatHistory.prop("scrollHeight"));
-        $("input[name='answer']").focus();
-      });
-    </script>
   </body>
 </html>

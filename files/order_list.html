@@ -2,53 +2,62 @@
 <html>
   <head>
     <title>Orders</title>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
   </head>
   <body>
-    <form action="/portal/chat/help" method="post">
-      <input type="submit" value="Chat" class="link-button" />
-    </form>
-    <ul>
-      <li><a href="/portal/order/list">Orders</a></li>
-      <li><a href="/portal/chat/list">Chat History</a></li>
-      <li><a href="/portal/logout">Exit</a></li>
-    </ul>
-    <p>Orders</p>
-    <table>
-      <tr>
-        <th>ID</th>
-        <th>Customer</th>
-        <th>Items</th>
-        <th>Status</th>
-      </tr>
-      {{range .orders}}
-      <tr>
-        <td>{{.ID.Hex}}</td>
-        <td>{{.Customer.Name}}</td>
-        <td>{{range .Items}} |{{.Name}}| {{end}}</td>
-        <td>{{.Status}}</td>
-        <td>
-          {{if ne .ChatStatus "done"}}
-          <form
-            action="/portal/customer/{{.Customer.ID.Hex}}/order/{{.ID.Hex}}/delivered"
-            method="post"
-          >
-            {{if eq .ChatStatus "inProgress"}}
-            <input type="submit" value="Continue Review" />
+    <div class="container">
+      <form action="/portal/chat/help" method="post" class="mb-3">
+        <input type="submit" value="Chat" class="btn btn-primary" />
+      </form>
+      <ul class="list-group">
+        <li class="list-group-item"><a href="/portal/order/list">Orders</a></li>
+        <li class="list-group-item">
+          <a href="/portal/chat/list">Chat History</a>
+        </li>
+        <li class="list-group-item"><a href="/portal/logout">Exit</a></li>
+      </ul>
+      <h2>Orders</h2>
+      <table class="table">
+        <tr>
+          <th>ID</th>
+          <th>Customer</th>
+          <th>Items</th>
+          <th>Status</th>
+        </tr>
+        {{range .orders}}
+        <tr>
+          <td>{{.ID.Hex}}</td>
+          <td>{{.Customer.Name}}</td>
+          <td>{{range .Items}} |{{.Name}}| {{end}}</td>
+          <td>{{.Status}}</td>
+          <td>
+            {{if ne .ChatStatus "done"}}
+            <form
+              action="/portal/customer/{{.Customer.ID.Hex}}/order/{{.ID.Hex}}/delivered"
+              method="post"
+            >
+              {{if eq .ChatStatus "inProgress"}}
+              <input type="submit" value="Continue Review" />
+              {{else}}
+              <input type="submit" value="Mark as Delivered" />
+              {{end}}
+            </form>
             {{else}}
-            <input type="submit" value="Mark as Delivered" />
+            <form
+              action="/portal/chat/customer/{{.Customer.ID.Hex}}/order/{{.ID.Hex}}"
+              method="post"
+            >
+              <input type="submit" value="See Review" />
+            </form>
             {{end}}
-          </form>
-          {{else}}
-          <form
-            action="/portal/chat/customer/{{.Customer.ID.Hex}}/order/{{.ID.Hex}}"
-            method="post"
-          >
-            <input type="submit" value="See Review" />
-          </form>
-          {{end}}
-        </td>
-      </tr>
-      {{end}}
-    </table>
+          </td>
+        </tr>
+        {{end}}
+      </table>
+    </div>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
   </body>
 </html>

@@ -2,15 +2,44 @@
 <html>
   <head>
     <title>Home</title>
+    <!-- Include Bootstrap CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
   </head>
   <body>
-    <p>{{.message}}</p>
-    <form action="/login" method="post">
-      <label>email</label>
-      <input type="text" name="email" required />
-      <label>password</label>
-      <input type="password" name="password" required />
-      <input type="submit" value="Submit" />
-    </form>
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-6">
+          <p class="mt-5">{{.message}}</p>
+          <form action="/login" method="post">
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input
+                type="text"
+                class="form-control"
+                id="email"
+                name="email"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input
+                type="password"
+                class="form-control"
+                id="password"
+                name="password"
+                required
+              />
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- Include Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
   </body>
 </html>
