@@ -9,3 +9,10 @@ mockery:
 
 mocks: mockery
 	mockery --dir internal --with-expecter --keeptree --all
+
+.PHONY: test
+test:
+	go test -v -cover ./... > test_report.txt
+	go test -coverprofile=coverage.out ./...
+	go tool cover -html=coverage.out -o coverage.html		
+	explorer.exe coverage.html

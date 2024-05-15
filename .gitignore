@@ -1,2 +1,5 @@
 infra
 chatbot
+test_report.txt
+coverage.out
+coverage.html
