@@ -1,7 +1,7 @@
 # go-chatbot
 
 ![Build](https://github.com/LeandroFranciscato/go-chatbot/actions/workflows/go.yml/badge.svg)
-[![Coverage](https://github.com/LeandroFranciscato/go-chatbot/wiki/coverage.svg)](https://raw.githack.com/wiki/USER/REPO/coverage.html)
+[![Coverage](https://github.com/LeandroFranciscato/go-chatbot/wiki/coverage.svg)](https://raw.githack.com/wiki/LeandroFranciscato/go-chatbot/coverage.html)
 
 This project aims to create a chatbot that can interact with users in a meaningful and engaging way.
 
