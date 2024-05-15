@@ -1,7 +1,7 @@
 
 # go-chatbot
 
-![example workflow](https://github.com/LeandroFranciscato/go-chatbot/.github/workflows/go.yml/badge.svg)
+![Build](https://github.com/LeandroFranciscato/go-chatbot/actions/workflows/go.yml/badge.svg)
 
 This project aims to create a chatbot that can interact with users in a meaningful and engaging way.
 
