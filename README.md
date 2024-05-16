@@ -11,6 +11,8 @@ This project has a few prerequisites:
 
 - Go 1.18+: [official Go website](https://golang.org/dl/).
 
+- Docker Compose: [Compose Overview](https://docs.docker.com/compose/)
+
 - MongoDB: This project uses MongoDB as its primary database.[official MongoDB website](https://www.mongodb.com/try/download/community).
 
 ## Project Goals
@@ -27,6 +29,7 @@ To get started with this project, clone the repository and install the necessary
 git clone https://github.com/LeandroFranciscato/go-chatbot
 cd go-chatbot
 go mod tidy
+docker compose -f infra/mongo/docker-compose.yaml up
 go run main.go
 ```
 
@@ -57,5 +60,3 @@ make mocks
 ```bash
 make test
 ```
-
-Then open `coverage.html`.
